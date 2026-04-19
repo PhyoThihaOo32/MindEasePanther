@@ -11,12 +11,16 @@ TEMPLATE = app
 SOURCES += \
     main.cpp \
     mainwindow.cpp \
+    screen.cpp \
     recommendations.cpp \
     toolkit.cpp \
+    journalentry.cpp \
     journal.cpp
 
 HEADERS += \
     mainwindow.h \
+    screen.h \
     recommendations.h \
     toolkit.h \
+    journalentry.h \
     journal.h

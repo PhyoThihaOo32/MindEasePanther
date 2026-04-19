@@ -4,13 +4,21 @@
 #include <QMainWindow>
 #include <QStackedWidget>
 #include <QPushButton>
+#include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QVector>
 
-class Recommendations;
-class Toolkit;
-class Journal;
+// Forward declaration — MainWindow only needs to know that Screen exists.
+class Screen;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// MainWindow — top-level application window
+//
+// Owns the sidebar and a QStackedWidget of Screen* objects. Uses runtime
+// polymorphism: screens are stored as Screen* and switchScreen() calls the
+// virtual onActivated() on whichever concrete subclass is currently active.
+// ─────────────────────────────────────────────────────────────────────────────
 
 class MainWindow : public QMainWindow {
     Q_OBJECT
@@ -32,10 +40,7 @@ private:
     QStackedWidget *stack;
 
     QVector<QPushButton*> navButtons;
-
-    Recommendations *recScreen;
-    Toolkit         *toolkitScreen;
-    Journal         *journalScreen;
+    QVector<Screen*>      screens;    // polymorphic ownership list
 };
 
 #endif // MAINWINDOW_H

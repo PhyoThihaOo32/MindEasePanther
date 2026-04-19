@@ -1,4 +1,5 @@
 #include "toolkit.h"
+#include "screen.h"
 #include <QVBoxLayout>
 #include <QHBoxLayout>
 #include <QLabel>
@@ -293,46 +294,49 @@ static QWidget* makeToolItem(const ToolItem &item) {
     QFrame *row = new QFrame();
     row->setStyleSheet("QFrame { border:none; background:transparent; }");
     QHBoxLayout *hl = new QHBoxLayout(row);
-    hl->setContentsMargins(0, 6, 0, 6);
-    hl->setSpacing(12);
+    hl->setContentsMargins(0, 10, 0, 10);
+    hl->setSpacing(14);
 
     // Icon badge
     QLabel *iconLbl = new QLabel(item.icon);
-    iconLbl->setFixedSize(34, 34);
+    iconLbl->setFixedSize(36, 36);
     iconLbl->setAlignment(Qt::AlignCenter);
     iconLbl->setStyleSheet(
-        "font-size:17px; background:#f5f4f0; border-radius:8px; border:none;");
+        "font-size:18px; background:#faf9f5; border-radius:9px; border:none;");
 
     // Text block
     QWidget *textBlock = new QWidget();
     textBlock->setStyleSheet("background:transparent; border:none;");
     QVBoxLayout *vl = new QVBoxLayout(textBlock);
     vl->setContentsMargins(0, 0, 0, 0);
-    vl->setSpacing(4);
+    vl->setSpacing(5);
 
     QLabel *titleLbl = new QLabel(item.title);
     titleLbl->setStyleSheet(
-        "font-size:13px; font-weight:700; color:#1a1a1a; border:none;");
+        "font-size:13px; font-weight:700; color:#1a1a1a; border:none; "
+        "letter-spacing:-0.1px;");
     vl->addWidget(titleLbl);
 
     if (!item.body.isEmpty()) {
         QLabel *bodyLbl = new QLabel(item.body);
         bodyLbl->setWordWrap(true);
-        bodyLbl->setStyleSheet("font-size:12px; color:#555; border:none; line-height:160%;");
+        bodyLbl->setStyleSheet(
+            "font-size:12px; color:#5d574f; border:none; line-height:165%;");
         vl->addWidget(bodyLbl);
     }
 
     if (!item.url.isEmpty()) {
         QPushButton *linkBtn = new QPushButton(
             item.urlLabel.isEmpty() ? "Visit →" : item.urlLabel);
-        QString u = item.url;
+        const QString u = item.url;
         QObject::connect(linkBtn, &QPushButton::clicked, [u]() {
             QDesktopServices::openUrl(QUrl(u));
         });
         linkBtn->setStyleSheet(
-            "QPushButton { font-size:11px; font-weight:600; color:#534AB7; background:#EEEDFE; "
-            "border:none; border-radius:6px; padding:4px 12px; margin-top:2px; }"
-            "QPushButton:hover { background:#dddaf8; }");
+            "QPushButton { font-size:11px; font-weight:700; color:#534AB7; "
+            "  background:#EEEDFE; border:none; border-radius:7px; "
+            "  padding:5px 13px; margin-top:3px; }"
+            "QPushButton:hover { background:#ddd9f6; color:#3d358f; }");
         linkBtn->setCursor(Qt::PointingHandCursor);
         linkBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         vl->addWidget(linkBtn);
@@ -346,7 +350,7 @@ static QWidget* makeToolItem(const ToolItem &item) {
 static QFrame* makeDivider() {
     QFrame *f = new QFrame();
     f->setFrameShape(QFrame::HLine);
-    f->setStyleSheet("background:#f0ede6; border:none;");
+    f->setStyleSheet("background:#f2efe7; border:none;");
     f->setFixedHeight(1);
     return f;
 }
@@ -355,38 +359,53 @@ static QFrame* makeDivider() {
 // Constructor
 // ─────────────────────────────────────────────────────────────────────────────
 
-Toolkit::Toolkit(QWidget *parent) : QWidget(parent) {
+// ── Activation hook ───────────────────────────────────────────────────────────
+// Called by MainWindow when the user switches to this screen.
+// Overrides the virtual onActivated() from Screen.
+void Toolkit::onActivated() {
+    // Close the open folder so the user always lands on a clean accordion view.
+    if (!openFolder.isEmpty())
+        toggleFolder(openFolder);   // toggleFolder treats an already-open id as close
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Constructor
+// ─────────────────────────────────────────────────────────────────────────────
+
+Toolkit::Toolkit(QWidget *parent) : Screen("Mental Health Toolkit", parent) {
     QVBoxLayout *main = new QVBoxLayout(this);
-    main->setContentsMargins(24, 20, 24, 20);
-    main->setSpacing(14);
+    main->setContentsMargins(32, 24, 32, 24);
+    main->setSpacing(16);
 
-    // Header
-    QLabel *title = new QLabel("Mental Health Toolkit");
-    title->setObjectName("screenTitle");
-    main->addWidget(title);
-
-    QFrame *hdiv = new QFrame();
-    hdiv->setFrameShape(QFrame::HLine);
-    hdiv->setStyleSheet("color:#eee;");
-    main->addWidget(hdiv);
+    // Shared header (title label + divider) via the Screen base-class utility.
+    buildHeader(main);
 
     // Intro banner
     QFrame *banner = new QFrame();
     banner->setStyleSheet(
-        "QFrame { background:#f5f4f0; border-radius:10px; border:none; }");
+        "QFrame { background:#f5f4fb; border:1px solid #e4e0f5; "
+        "         border-radius:12px; }");
     QHBoxLayout *bannerLay = new QHBoxLayout(banner);
-    bannerLay->setContentsMargins(14, 12, 14, 12);
-    bannerLay->setSpacing(10);
+    bannerLay->setContentsMargins(18, 14, 18, 14);
+    bannerLay->setSpacing(14);
     QLabel *bannerIcon = new QLabel("🌱");
-    bannerIcon->setStyleSheet("font-size:22px; border:none;");
+    bannerIcon->setStyleSheet("font-size:24px; border:none; background:transparent;");
     QLabel *bannerText = new QLabel(
         "Taking care of your well-being is just as important as acing that next exam. "
-        "Click any folder below to explore tools, tips, and resources curated just for BMCC students.");
+        "Click any folder below to explore tools, tips, and resources curated for BMCC students.");
     bannerText->setWordWrap(true);
-    bannerText->setStyleSheet("font-size:12px; color:#555; border:none;");
+    bannerText->setStyleSheet(
+        "font-size:12px; color:#4d4758; border:none; background:transparent; "
+        "line-height:165%;");
     bannerLay->addWidget(bannerIcon, 0, Qt::AlignTop);
     bannerLay->addWidget(bannerText, 1);
     main->addWidget(banner);
+
+    // Section label above the folder list
+    QLabel *listLabel = new QLabel("TOOLBOX");
+    listLabel->setObjectName("sectionLabel");
+    main->addSpacing(2);
+    main->addWidget(listLabel);
 
     // Scrollable folder accordion
     QScrollArea *scroll = new QScrollArea();
@@ -394,36 +413,37 @@ Toolkit::Toolkit(QWidget *parent) : QWidget(parent) {
     scroll->setFrameShape(QFrame::NoFrame);
     QWidget *inner = new QWidget();
     QVBoxLayout *il = new QVBoxLayout(inner);
-    il->setContentsMargins(0, 0, 4, 0);
-    il->setSpacing(6);
+    il->setContentsMargins(0, 0, 6, 0);
+    il->setSpacing(8);
 
     for (const FolderDef &fd : FOLDERS) {
 
         // ── Folder card button ────────────────────────────────────────────
         QPushButton *card = new QPushButton();
-        card->setFixedHeight(64);
+        card->setFixedHeight(72);
         card->setCursor(Qt::PointingHandCursor);
         card->setStyleSheet(
             "QPushButton {"
-            "  border: 1.5px solid #e8e6e0;"
-            "  border-radius: 10px;"
+            "  border: 1px solid #ece9e2;"
+            "  border-radius: 12px;"
             "  background: #ffffff;"
+            "  text-align: left;"
             "}"
             "QPushButton:hover {"
-            "  border-color: #9E97E8;"
-            "  background: #fafafa;"
+            "  border: 1px solid #c8c3e8;"
+            "  background: #faf9fe;"
             "}");
 
         QHBoxLayout *cardLay = new QHBoxLayout(card);
-        cardLay->setContentsMargins(14, 0, 16, 0);
-        cardLay->setSpacing(12);
+        cardLay->setContentsMargins(18, 0, 18, 0);
+        cardLay->setSpacing(14);
 
         // Icon badge
         QLabel *iconBadge = new QLabel(fd.icon);
-        iconBadge->setFixedSize(40, 40);
+        iconBadge->setFixedSize(44, 44);
         iconBadge->setAlignment(Qt::AlignCenter);
         iconBadge->setStyleSheet(
-            QString("background:%1; border-radius:10px; font-size:21px; border:none;")
+            QString("background:%1; border-radius:11px; font-size:22px; border:none;")
                 .arg(fd.accent));
         iconBadge->setAttribute(Qt::WA_TransparentForMouseEvents);
 
@@ -433,20 +453,21 @@ Toolkit::Toolkit(QWidget *parent) : QWidget(parent) {
         cardText->setAttribute(Qt::WA_TransparentForMouseEvents);
         QVBoxLayout *cardTextLay = new QVBoxLayout(cardText);
         cardTextLay->setContentsMargins(0, 0, 0, 0);
-        cardTextLay->setSpacing(2);
+        cardTextLay->setSpacing(3);
         QLabel *nameLbl = new QLabel(fd.name);
         nameLbl->setStyleSheet(
-            "font-size:13px; font-weight:700; color:#1a1a1a; border:none;");
+            "font-size:14px; font-weight:700; color:#1a1a1a; border:none; "
+            "letter-spacing:-0.15px;");
         QLabel *tagLbl = new QLabel(fd.tagline);
-        tagLbl->setStyleSheet("font-size:11px; color:#888; border:none;");
+        tagLbl->setStyleSheet("font-size:11px; color:#8a857c; border:none;");
         cardTextLay->addWidget(nameLbl);
         cardTextLay->addWidget(tagLbl);
 
         // Chevron
         QLabel *chev = new QLabel("›");
-        chev->setFixedWidth(18);
+        chev->setFixedWidth(20);
         chev->setAlignment(Qt::AlignCenter);
-        chev->setStyleSheet("font-size:20px; color:#bbb; border:none;");
+        chev->setStyleSheet("font-size:22px; color:#c8c3ba; border:none;");
         chev->setAttribute(Qt::WA_TransparentForMouseEvents);
 
         cardLay->addWidget(iconBadge);
@@ -457,30 +478,32 @@ Toolkit::Toolkit(QWidget *parent) : QWidget(parent) {
         QFrame *panel = new QFrame();
         panel->setStyleSheet(
             QString("QFrame {"
-                    "  border: 1.5px solid %1;"
+                    "  border: 1px solid %1;"
                     "  border-top: none;"
-                    "  border-radius: 0 0 10px 10px;"
+                    "  border-radius: 0 0 12px 12px;"
                     "  background: #ffffff;"
                     "}").arg(fd.accentBorder));
         panel->setVisible(false);
 
         QVBoxLayout *panelLay = new QVBoxLayout(panel);
-        panelLay->setContentsMargins(16, 14, 16, 16);
+        panelLay->setContentsMargins(20, 18, 20, 20);
         panelLay->setSpacing(0);
 
         // Intro box
         QFrame *introBox = new QFrame();
         introBox->setStyleSheet(
-            QString("QFrame { background:%1; border-radius:8px; border:none; }")
+            QString("QFrame { background:%1; border-radius:10px; border:none; }")
                 .arg(fd.accent));
         QVBoxLayout *introLay = new QVBoxLayout(introBox);
-        introLay->setContentsMargins(12, 10, 12, 10);
+        introLay->setContentsMargins(14, 12, 14, 12);
         QLabel *introLbl = new QLabel(fd.intro);
         introLbl->setWordWrap(true);
-        introLbl->setStyleSheet("font-size:12px; color:#444; border:none;");
+        introLbl->setStyleSheet(
+            "font-size:12px; color:#3d3a35; border:none; background:transparent; "
+            "line-height:170%;");
         introLay->addWidget(introLbl);
         panelLay->addWidget(introBox);
-        panelLay->addSpacing(12);
+        panelLay->addSpacing(10);
 
         // Tool items with dividers
         for (int j = 0; j < fd.items.size(); j++) {
@@ -523,13 +546,14 @@ void Toolkit::toggleFolder(const QString &id) {
         if (auto *btn = qobject_cast<QPushButton*>(it.value()))
             btn->setStyleSheet(
                 "QPushButton {"
-                "  border: 1.5px solid #e8e6e0;"
-                "  border-radius: 10px;"
+                "  border: 1px solid #ece9e2;"
+                "  border-radius: 12px;"
                 "  background: #ffffff;"
+                "  text-align: left;"
                 "}"
                 "QPushButton:hover {"
-                "  border-color: #9E97E8;"
-                "  background: #fafafa;"
+                "  border: 1px solid #c8c3e8;"
+                "  background: #faf9fe;"
                 "}");
     }
 
@@ -554,10 +578,11 @@ void Toolkit::toggleFolder(const QString &id) {
     if (auto *btn = qobject_cast<QPushButton*>(folderCards.value(id)))
         btn->setStyleSheet(
             QString("QPushButton {"
-                    "  border: 1.5px solid %1;"
+                    "  border: 1px solid %1;"
                     "  border-bottom: none;"
-                    "  border-radius: 10px 10px 0 0;"
+                    "  border-radius: 12px 12px 0 0;"
                     "  background: %2;"
+                    "  text-align: left;"
                     "}").arg(accentBorder, accent));
 
     if (chevrons.contains(id))

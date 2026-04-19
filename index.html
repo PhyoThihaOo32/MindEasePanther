@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MindEase — BMCC Wellness Companion</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500;600&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <style>
+
+  /* ═══════════════════════════════════════════════════════════════════
+     TOKENS
+  ═══════════════════════════════════════════════════════════════════ */
+
+  :root {
+    /* Surfaces */
+    --white:        #ffffff;
+    --ivory:        #fafaf7;
+    --ivory-warm:   #f6f4ef;
+    --linen:        #efe9e0;
+    --linen-soft:   #f3efe8;
+
+    /* Sage family — desaturated, calm */
+    --mist:         #eef5ec;
+    --mist-2:       #e4efe2;
+    --sage-pale:    #d5e8d1;
+    --sage-soft:    #b3d0ac;
+    --sage:         #88b880;
+    --sage-mid:     #619959;
+    --sage-deep:    #4a7a43;
+    --moss:         #355c2f;
+    --forest:       #243d1f;
+    --bark:         #162816;
+
+    /* Text */
+    --ink:          #1d2d1b;
+    --ink-mid:      #3d5839;
+    --ink-soft:     #6e8f6a;
+    --ink-muted:    #a4bda0;
+
+    /* Lines */
+    --line:         #dce8d9;
+    --line-soft:    #e8f0e6;
+
+    /* Shadows */
+    --shadow-sm:    0 2px 12px rgba(53,92,47,0.07);
+    --shadow-md:    0 8px 32px rgba(53,92,47,0.10);
+    --shadow-lg:    0 20px 60px rgba(53,92,47,0.13);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     RESET + BASE
+  ═══════════════════════════════════════════════════════════════════ */
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; font-size: 16px; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: var(--ivory);
+    color: var(--ink);
+    overflow-x: hidden;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     SCROLL REVEAL
+  ═══════════════════════════════════════════════════════════════════ */
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.75s cubic-bezier(0.22,1,0.36,1),
+                transform 0.75s cubic-bezier(0.22,1,0.36,1);
+  }
+  .reveal.visible { opacity: 1; transform: none; }
+  .reveal-delay-1 { transition-delay: 0.1s; }
+  .reveal-delay-2 { transition-delay: 0.2s; }
+  .reveal-delay-3 { transition-delay: 0.32s; }
+  .reveal-delay-4 { transition-delay: 0.44s; }
+  .reveal-delay-5 { transition-delay: 0.56s; }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     NAV
+  ═══════════════════════════════════════════════════════════════════ */
+
+  nav {
+    position: fixed;
+    inset: 0 0 auto 0;
+    z-index: 200;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 56px;
+    background: rgba(250,250,247,0.82);
+    backdrop-filter: blur(20px) saturate(1.4);
+    border-bottom: 1px solid var(--line-soft);
+    transition: box-shadow 0.3s;
+  }
+  nav.scrolled { box-shadow: var(--shadow-sm); }
+
+  .nav-logo {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    text-decoration: none;
+  }
+  .nav-leaf {
+    width: 30px; height: 30px;
+    background: var(--moss);
+    border-radius: 62% 38% 60% 40% / 52% 58% 42% 48%;
+    display: grid; place-items: center;
+    font-size: 14px;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(53,92,47,0.22);
+  }
+  .nav-wordmark {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--forest);
+    letter-spacing: 0.03em;
+  }
+
+  .nav-links {
+    display: flex; align-items: center;
+    gap: 32px; list-style: none;
+  }
+  .nav-links a {
+    font-size: 12.5px; font-weight: 500;
+    color: var(--ink-soft);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--moss); }
+
+  .nav-gh {
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 0.07em;
+    color: var(--white) !important;
+    background: var(--moss);
+    padding: 7px 18px;
+    border-radius: 50px;
+    box-shadow: 0 2px 10px rgba(53,92,47,0.22);
+    transition: background 0.25s, transform 0.15s !important;
+  }
+  .nav-gh:hover { background: var(--forest) !important; transform: translateY(-1px); }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     HERO
+  ═══════════════════════════════════════════════════════════════════ */
+
+  .hero {
+    position: relative;
+    min-height: 100svh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 110px 24px 96px;
+    background: linear-gradient(168deg,
+      var(--white)     0%,
+      var(--ivory)    30%,
+      var(--mist)     65%,
+      var(--mist-2)  100%);
+    overflow: hidden;
+  }
+
+  /* Floating botanical blobs */
+  .hero-bg { position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+
+  .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(64px);
+    will-change: transform;
+  }
+  .blob-1 {
+    width: 560px; height: 420px;
+    background: radial-gradient(ellipse, rgba(136,184,128,0.18) 0%, transparent 70%);
+    top: -80px; right: -100px;
+    animation: floatA 14s ease-in-out infinite;
+  }
+  .blob-2 {
+    width: 440px; height: 360px;
+    background: radial-gradient(ellipse, rgba(74,122,67,0.12) 0%, transparent 70%);
+    bottom: -60px; left: -80px;
+    animation: floatB 18s ease-in-out infinite;
+  }
+  .blob-3 {
+    width: 260px; height: 240px;
+    background: radial-gradient(ellipse, rgba(179,208,172,0.22) 0%, transparent 70%);
+    top: 38%; left: 8%;
+    animation: floatC 11s ease-in-out infinite;
+  }
+  @keyframes floatA {
+    0%,100% { transform: translate(0,0) scale(1); }
+    33%      { transform: translate(-30px,20px) scale(1.04); }
+    66%      { transform: translate(20px,-15px) scale(0.97); }
+  }
+  @keyframes floatB {
+    0%,100% { transform: translate(0,0) scale(1); }
+    40%      { transform: translate(25px,-20px) scale(1.06); }
+    75%      { transform: translate(-15px,25px) scale(0.96); }
+  }
+  @keyframes floatC {
+    0%,100% { transform: translate(0,0); }
+    50%      { transform: translate(12px,-18px); }
+  }
+
+  /* Organic line art */
+  .hero-lines {
+    position: absolute; inset: 0;
+    pointer-events: none; opacity: 0.055;
+  }
+
+  /* Dot pattern */
+  .hero-dots {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0.06;
+  }
+
+  .hero-content { position: relative; z-index: 2; max-width: 740px; }
+
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--sage-mid);
+    background: rgba(255,255,255,0.7);
+    border: 1px solid var(--sage-pale);
+    padding: 5px 16px 5px 12px;
+    border-radius: 50px;
+    margin-bottom: 32px;
+    backdrop-filter: blur(6px);
+    box-shadow: var(--shadow-sm);
+  }
+  .eyebrow-dot {
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--sage-mid);
+    flex-shrink: 0;
+  }
+
+  .hero-title {
+    font-family: 'DM Serif Display', 'Cormorant Garamond', serif;
+    font-size: clamp(50px, 7.5vw, 84px);
+    font-weight: 400;
+    line-height: 1.06;
+    color: var(--forest);
+    letter-spacing: -0.01em;
+    margin-bottom: 10px;
+  }
+  .hero-title em {
+    font-style: italic;
+    color: var(--sage-deep);
+  }
+
+  .hero-sub {
+    font-size: 16px; font-weight: 300;
+    color: var(--ink-mid);
+    max-width: 500px;
+    margin: 22px auto 42px;
+    line-height: 1.82;
+  }
+
+  .pill-row {
+    display: flex; justify-content: center;
+    flex-wrap: wrap; gap: 8px;
+    margin-bottom: 48px;
+  }
+  .pill {
+    font-size: 11.5px; font-weight: 500;
+    color: var(--ink-mid);
+    background: rgba(255,255,255,0.72);
+    border: 1px solid var(--line);
+    padding: 5px 13px;
+    border-radius: 50px;
+    backdrop-filter: blur(6px);
+    letter-spacing: 0.02em;
+  }
+
+  .cta-row {
+    display: flex; justify-content: center;
+    gap: 12px; flex-wrap: wrap;
+  }
+  .btn-fill {
+    font-size: 13px; font-weight: 600; letter-spacing: 0.04em;
+    color: var(--white);
+    background: var(--forest);
+    padding: 13px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: background 0.25s, transform 0.18s;
+    box-shadow: 0 4px 18px rgba(36,61,31,0.28);
+  }
+  .btn-fill:hover { background: var(--moss); transform: translateY(-2px); }
+
+  .btn-ghost {
+    font-size: 13px; font-weight: 500; letter-spacing: 0.04em;
+    color: var(--moss);
+    background: rgba(255,255,255,0.65);
+    border: 1.5px solid var(--sage-pale);
+    padding: 13px 30px;
+    border-radius: 50px;
+    text-decoration: none;
+    transition: background 0.22s, border-color 0.22s, transform 0.18s;
+    backdrop-filter: blur(6px);
+  }
+  .btn-ghost:hover { background: var(--mist); border-color: var(--sage-soft); transform: translateY(-2px); }
+
+  .scroll-indicator {
+    position: absolute; bottom: 36px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 7px;
+    opacity: 0.35;
+  }
+  .scroll-indicator span {
+    font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+  .scroll-bar {
+    width: 1px; height: 44px;
+    background: linear-gradient(to bottom, var(--sage-mid), transparent);
+    animation: drip 2s ease-in-out infinite;
+  }
+  @keyframes drip {
+    0%   { transform: scaleY(0); transform-origin: top; opacity: 0; }
+    30%  { opacity: 1; }
+    70%  { transform: scaleY(1); transform-origin: top; opacity: 1; }
+    100% { transform: scaleY(1); transform-origin: top; opacity: 0; }
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     STATS STRIP
+  ═══════════════════════════════════════════════════════════════════ */
+
+  .stats-strip {
+    background: var(--white);
+    border-top: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .stats-inner {
+    max-width: 1100px; margin: 0 auto;
+    padding: 0 40px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    divide: yes;
+  }
+  .stat-item {
+    padding: 36px 32px;
+    border-right: 1px solid var(--line-soft);
+    position: relative;
+  }
+  .stat-item:last-child { border-right: none; }
+
+  .stat-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 48px;
+    font-weight: 400;
+    color: var(--sage-deep);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .stat-label {
+    font-size: 12px; font-weight: 500;
+    color: var(--ink-soft);
+    letter-spacing: 0.03em;
+  }
+  .stat-sub {
+    font-size: 11px; color: var(--ink-muted);
+    margin-top: 3px; line-height: 1.4;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     SHARED SECTION ELEMENTS
+  ═══════════════════════════════════════════════════════════════════ */
+
+  section { position: relative; overflow: hidden; }
+
+  .s-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 108px 40px;
+  }
+
+  .s-tag {
+    display: inline-block;
+    font-size: 10px; font-weight: 700;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--sage-mid);
+    margin-bottom: 16px;
+  }
+
+  .s-title {
+    font-family: 'DM Serif Display', 'Cormorant Garamond', serif;
+    font-size: clamp(34px, 4.5vw, 52px);
+    font-weight: 400;
+    color: var(--forest);
+    line-height: 1.12;
+    margin-bottom: 18px;
+  }
+  .s-title em { font-style: italic; color: var(--sage-deep); }
+
+  .s-desc {
+    font-size: 15px; font-weight: 300;
+    color: var(--ink-mid);
+    max-width: 540px;
+    line-height: 1.85;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     HOW IT WORKS
+  ═══════════════════════════════════════════════════════════════════ */
+
+  .how-sec { background: var(--white); }
+
+  .how-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+    margin-top: 64px;
+  }
+
+  .how-card {
+    background: var(--ivory);
+    border: 1px solid var(--line-soft);
+    border-radius: 24px;
+    padding: 44px 34px 38px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.22,1,0.36,1),
+                box-shadow 0.3s;
+  }
+  .how-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    border-radius: 24px;
+    background: linear-gradient(135deg, var(--mist) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .how-card:hover { transform: translateY(-7px); box-shadow: var(--shadow-md); }
+  .how-card:hover::before { opacity: 1; }
+
+  .how-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 80px; font-weight: 400;
+    color: var(--sage-pale);
+    line-height: 1;
+    margin-bottom: 22px;
+    position: relative; z-index: 1;
+  }
+  .how-icon-badge {
+    position: absolute; top: 36px; right: 36px;
+    width: 44px; height: 44px;
+    background: var(--mist-2);
+    border-radius: 12px;
+    display: grid; place-items: center;
+    font-size: 22px;
+    box-shadow: var(--shadow-sm);
+  }
+  .how-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 24px; font-weight: 400;
+    color: var(--forest);
+    margin-bottom: 12px;
+    position: relative; z-index: 1;
+  }
+  .how-desc {
+    font-size: 13.5px; font-weight: 400;
+    color: var(--ink-mid);
+    line-height: 1.78;
+    position: relative; z-index: 1;
+  }
+  .how-learn {
+    display: inline-flex; align-items: center; gap: 6px;
+    margin-top: 22px;
+    font-size: 12px; font-weight: 600;
+    color: var(--sage-deep);
+    text-decoration: none;
+    letter-spacing: 0.04em;
+    position: relative; z-index: 1;
+    transition: gap 0.2s;
+  }
+  .how-learn:hover { gap: 10px; }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     QUOTE DIVIDER
+  ═══════════════════════════════════════════════════════════════════ */
+
+  .quote-divider {
+    background: linear-gradient(135deg, var(--mist) 0%, var(--mist-2) 100%);
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .quote-inner {
+    max-width: 860px; margin: 0 auto;
+    padding: 72px 40px;
+    text-align: center;
+    position: relative;
+  }
+  .quote-mark {
+    font-family: 'DM Serif Display', serif;
+    font-size: 96px; font-weight: 400;
+    color: var(--sage-soft);
+    line-height: 0.5;
+    margin-bottom: 20px;
+    display: block;
+    opacity: 0.6;
+  }
+  .quote-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(22px, 3vw, 32px);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--forest);
+    line-height: 1.5;
+    margin-bottom: 20px;
+  }
+  .quote-attr {
+    font-size: 11.5px; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     BENTO FEATURES
+  ═══════════════════════════════════════════════════════════════════ */
+
+  .features-sec {
+    background: linear-gradient(178deg, var(--ivory-warm) 0%, var(--white) 100%);
+  }
+
+  .bento {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 16px;
+    margin-top: 64px;
+  }
+
+  .bc { /* bento-card base */
+    border-radius: 22px;
+    padding: 38px;
+    position: relative; overflow: hidden;
+    transition: transform 0.3s cubic-bezier(0.22,1,0.36,1), box-shadow 0.3s;
+  }
+  .bc:hover { transform: translateY(-5px); box-shadow: var(--shadow-md); }
+
+  .bc-7  { grid-column: span 7; }
+  .bc-5  { grid-column: span 5; }
+  .bc-4  { grid-column: span 4; }
+  .bc-8  { grid-column: span 8; }
+  .bc-6  { grid-column: span 6; }
+
+  .bc-dark  { background: var(--forest); }
+  .bc-moss  { background: var(--moss); }
+  .bc-mist  { background: var(--mist); border: 1px solid var(--sage-pale); }
+  .bc-white { background: var(--white); border: 1.5px solid var(--line); }
+  .bc-sage  { background: var(--sage-pale); border: 1px solid var(--sage-soft); }
+  .bc-linen { background: var(--linen-soft); border: 1px solid var(--linen); }
+
+  .bc-emoji { font-size: 32px; margin-bottom: 18px; display: block; }
+
+  .bc-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 25px; font-weight: 400;
+    line-height: 1.18; margin-bottom: 11px;
+  }
+  .bc-dark .bc-title, .bc-moss .bc-title { color: rgba(255,255,255,0.92); }
+  .bc-mist .bc-title, .bc-white .bc-title, .bc-sage .bc-title, .bc-linen .bc-title { color: var(--forest); }
+
+  .bc-desc {
+    font-size: 13.5px; font-weight: 400;
+    line-height: 1.78;
+  }
+  .bc-dark .bc-desc, .bc-moss .bc-desc { color: rgba(255,255,255,0.62); }
+  .bc-mist .bc-desc, .bc-white .bc-desc { color: var(--ink-mid); }
+  .bc-sage .bc-desc, .bc-linen .bc-desc { color: var(--ink-mid); }
+
+  .bc-chips {
+    display: flex; flex-wrap: wrap; gap: 7px;
+    margin-top: 20px;
+  }
+  .chip {
+    font-size: 11px; font-weight: 600;
+    padding: 4px 12px; border-radius: 50px;
+    letter-spacing: 0.03em;
+  }
+  .bc-dark .chip, .bc-moss .chip { background: rgba(255,255,255,0.13); color: rgba(255,255,255,0.85); }
+  .bc-mist .chip { background: var(--sage-soft); color: var(--forest); }
+  .bc-white .chip { background: var(--mist); color: var(--sage-deep); }
+  .bc-sage .chip  { background: rgba(255,255,255,0.55); color: var(--moss); }
+  .bc-linen .chip { background: rgba(255,255,255,0.7); color: var(--ink-mid); }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     TOOLKIT FOLDERS PREVIEW
+  ═══════════════════════════════════════════════════════════════════ */
+
+  .toolkit-sec { background: var(--white); }
+
+  .folder-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-top: 64px;
+  }
+
+  .folder-card {
+    border-radius: 18px;
+    padding: 28px 24px;
+    border: 1.5px solid var(--line-soft);
+    background: var(--white);
+    transition: transform 0.28s cubic-bezier(0.22,1,0.36,1),
+                box-shadow 0.28s, border-color 0.28s;
+    cursor: default;
+  }
+  .folder-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-md);
+    border-color: transparent;
+  }
+
+  .folder-icon-wrap {
+    width: 48px; height: 48px;
+    border-radius: 13px;
+    display: grid; place-items: center;
+    font-size: 24px;
+    margin-bottom: 16px;
+    transition: transform 0.28s;
+  }
+  .folder-card:hover .folder-icon-wrap { transform: scale(1.08); }
+
+  .folder-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px; font-weight: 400;
+    color: var(--forest);
+    margin-bottom: 6px;
+  }
+  .folder-tagline {
+    font-size: 12px; font-weight: 400;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .folder-count {
+    margin-top: 14px;
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 0.07em;
+    color: var(--ink-muted);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     RESOURCES
+  ═══════════════════════════════════════════════════════════════════ */
+
+  .resources-sec { background: var(--ivory-warm); }
+
+  .resource-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 14px;
+    margin-top: 64px;
+  }
+
+  .res-card {
+    background: var(--white);
+    border: 1.5px solid var(--line-soft);
+    border-radius: 20px;
+    padding: 30px 22px;
+    text-align: center;
+    transition: transform 0.28s cubic-bezier(0.22,1,0.36,1),
+                box-shadow 0.28s, background 0.25s;
+    cursor: default;
+  }
+  .res-card:hover {
+    background: var(--mist);
+    border-color: var(--sage-pale);
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .res-icon {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    background: var(--mist);
+    display: grid; place-items: center;
+    font-size: 26px;
+    margin: 0 auto 14px;
+    transition: transform 0.28s;
+  }
+  .res-card:hover .res-icon { transform: scale(1.1); }
+
+  .res-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 16px; font-weight: 400;
+    color: var(--forest);
+    margin-bottom: 8px;
+  }
+  .res-sub {
+    font-size: 11.5px; font-weight: 400;
+    color: var(--ink-soft);
+    line-height: 1.55;
+  }
+  .res-count {
+    margin-top: 12px;
+    display: inline-block;
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.08em;
+    color: var(--sage-mid);
+    background: var(--mist-2);
+    padding: 3px 10px;
+    border-radius: 50px;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     JOURNAL SECTION
+  ═══════════════════════════════════════════════════════════════════ */
+
+  .journal-sec {
+    background: linear-gradient(162deg, var(--mist) 0%, var(--white) 55%);
+  }
+
+  .journal-two {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 72px;
+    align-items: center;
+  }
+
+  .journal-feature-list {
+    list-style: none;
+    display: flex; flex-direction: column;
+    gap: 16px;
+    margin: 32px 0 40px;
+  }
+  .jf-item {
+    display: flex;
+    gap: 14px;
+    padding: 16px 18px;
+    border-radius: 14px;
+    background: rgba(255,255,255,0.65);
+    border: 1px solid var(--line-soft);
+    backdrop-filter: blur(6px);
+    transition: background 0.2s;
+  }
+  .jf-item:hover { background: rgba(255,255,255,0.9); }
+
+  .jf-dot {
+    width: 32px; height: 32px; flex-shrink: 0;
+    border-radius: 10px;
+    background: var(--mist-2);
+    display: grid; place-items: center;
+    font-size: 16px;
+    margin-top: 1px;
+  }
+  .jf-text strong {
+    display: block;
+    font-size: 13px; font-weight: 600;
+    color: var(--forest);
+    margin-bottom: 3px;
+  }
+  .jf-text span {
+    font-size: 12.5px; font-weight: 400;
+    color: var(--ink-mid);
+    line-height: 1.6;
+  }
+
+  /* Mock journal UI */
+  .journal-mock {
+    background: var(--white);
+    border: 1.5px solid var(--line-soft);
+    border-radius: 24px;
+    overflow: hidden;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .jm-header {
+    background: var(--forest);
+    padding: 18px 24px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .jm-header-left {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px; font-weight: 400;
+    color: rgba(255,255,255,0.9);
+  }
+  .jm-clock {
+    font-size: 11px; font-weight: 500;
+    color: var(--sage-soft);
+    letter-spacing: 0.04em;
+  }
+  .jm-date-bar {
+    background: var(--mist);
+    padding: 10px 24px;
+    font-size: 11.5px; font-weight: 600;
+    color: var(--sage-deep);
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid var(--line);
+  }
+  .jm-body { padding: 20px 24px; }
+
+  .jm-prompts {
+    background: var(--ivory-warm);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--sage-soft);
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+  }
+  .jm-prompts-title {
+    font-size: 10.5px; font-weight: 700;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--sage-deep);
+    margin-bottom: 7px;
+  }
+  .jm-prompt-line {
+    font-size: 11px; color: var(--ink-mid);
+    padding: 2px 0;
+    line-height: 1.5;
+  }
+
+  .jm-textarea {
+    background: var(--ivory);
+    border: 1.5px solid var(--sage-pale);
+    border-radius: 10px;
+    padding: 13px;
+    min-height: 82px;
+    font-size: 12.5px;
+    font-style: italic;
+    color: var(--ink-mid);
+    line-height: 1.72;
+  }
+
+  .jm-btns { display: flex; gap: 8px; margin-top: 12px; }
+  .jm-save {
+    font-size: 12px; font-weight: 700;
+    background: var(--moss); color: var(--white);
+    padding: 8px 18px; border-radius: 50px;
+    box-shadow: 0 2px 8px rgba(53,92,47,0.25);
+  }
+  .jm-clear {
+    font-size: 12px; font-weight: 500;
+    color: var(--ink-soft);
+    padding: 8px 14px; border-radius: 50px;
+    border: 1.5px solid var(--line);
+  }
+
+  .jm-footer {
+    background: var(--ivory-warm);
+    border-top: 1px solid var(--line-soft);
+    padding: 12px 24px;
+    font-size: 11px; color: var(--ink-muted);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .jm-footer-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--sage-soft);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     TECH / C++ SECTION
+  ═══════════════════════════════════════════════════════════════════ */
+
+  .tech-sec {
+    background: var(--forest);
+  }
+  .tech-sec .s-tag  { color: var(--sage-soft); }
+  .tech-sec .s-title { color: rgba(255,255,255,0.92); }
+  .tech-sec .s-desc  { color: rgba(255,255,255,0.55); }
+
+  /* Abstract grid overlay */
+  .tech-grid-overlay {
+    position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+  }
+
+  .tech-two {
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 64px;
+    align-items: start;
+    margin-top: 64px;
+  }
+
+  .tech-blockquote {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(28px, 3.5vw, 40px);
+    font-weight: 400; font-style: italic;
+    color: rgba(255,255,255,0.82);
+    line-height: 1.4;
+    margin-bottom: 32px;
+    position: relative;
+    padding-left: 24px;
+  }
+  .tech-blockquote::before {
+    content: '';
+    position: absolute; left: 0; top: 6px;
+    width: 3px; height: calc(100% - 12px);
+    background: var(--sage-soft);
+    border-radius: 2px;
+  }
+  .tech-blockquote strong { font-style: normal; color: var(--sage-soft); }
+
+  .tech-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tech-pill {
+    font-size: 11.5px; font-weight: 500;
+    color: var(--moss);
+    background: var(--sage-soft);
+    padding: 6px 16px;
+    border-radius: 50px;
+  }
+
+  .concept-stack { display: flex; flex-direction: column; gap: 10px; }
+
+  .concept-item {
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 14px;
+    align-items: start;
+    padding: 14px 18px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+    transition: background 0.2s;
+  }
+  .concept-item:hover { background: rgba(255,255,255,0.08); }
+
+  .concept-key {
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.07em; text-transform: uppercase;
+    color: var(--sage-soft);
+    padding-top: 2px;
+  }
+  .concept-val {
+    font-size: 12.5px; font-weight: 400;
+    color: rgba(255,255,255,0.6);
+    line-height: 1.6;
+  }
+  .concept-val code {
+    font-size: 11.5px;
+    background: rgba(255,255,255,0.1);
+    color: var(--sage-soft);
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     PRINCIPLES STRIP
+  ═══════════════════════════════════════════════════════════════════ */
+
+  .principles-sec {
+    background: linear-gradient(170deg, var(--ivory-warm) 0%, var(--white) 100%);
+    border-top: 1px solid var(--line-soft);
+    border-bottom: 1px solid var(--line-soft);
+  }
+
+  .principles-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--line-soft);
+    border: 1px solid var(--line-soft);
+    border-radius: 20px;
+    overflow: hidden;
+    margin-top: 60px;
+  }
+
+  .principle-item {
+    background: var(--white);
+    padding: 40px 36px;
+    transition: background 0.25s;
+  }
+  .principle-item:hover { background: var(--mist); }
+
+  .principle-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 14px; font-weight: 400;
+    color: var(--sage-soft);
+    margin-bottom: 14px;
+    letter-spacing: 0.04em;
+  }
+  .principle-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px; font-weight: 400;
+    color: var(--forest);
+    margin-bottom: 10px;
+  }
+  .principle-desc {
+    font-size: 13px; font-weight: 400;
+    color: var(--ink-mid);
+    line-height: 1.75;
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     FOOTER
+  ═══════════════════════════════════════════════════════════════════ */
+
+  footer {
+    background: var(--bark);
+    position: relative; overflow: hidden;
+  }
+
+  .footer-wave {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--sage-deep), transparent);
+  }
+
+  .footer-main {
+    max-width: 1100px; margin: 0 auto;
+    padding: 72px 40px 56px;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 48px;
+  }
+
+  .footer-brand .fb-logo {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 16px;
+  }
+  .fb-leaf {
+    width: 34px; height: 34px;
+    background: var(--moss);
+    border-radius: 62% 38% 60% 40% / 52% 58% 42% 48%;
+    display: grid; place-items: center;
+    font-size: 16px;
+  }
+  .fb-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px; font-weight: 400;
+    color: rgba(255,255,255,0.88);
+  }
+  .fb-desc {
+    font-size: 12.5px; font-weight: 400;
+    color: rgba(255,255,255,0.38);
+    line-height: 1.8;
+    max-width: 260px;
+  }
+  .fb-badges {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-top: 20px;
+  }
+  .fb-badge {
+    font-size: 10.5px; font-weight: 500;
+    color: rgba(255,255,255,0.45);
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    padding: 4px 10px; border-radius: 50px;
+  }
+
+  .footer-col-head {
+    font-size: 9.5px; font-weight: 800;
+    letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--sage-mid);
+    margin-bottom: 18px;
+  }
+  .footer-col-links { display: flex; flex-direction: column; gap: 11px; }
+  .footer-col-links a {
+    font-size: 12.5px; font-weight: 400;
+    color: rgba(255,255,255,0.42);
+    text-decoration: none;
+    transition: color 0.2s;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .footer-col-links a:hover { color: var(--sage-soft); }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    max-width: 1100px; margin: 0 auto;
+    padding: 24px 40px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .footer-bottom p, .footer-bottom span {
+    font-size: 11.5px;
+    color: rgba(255,255,255,0.22);
+  }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     RESPONSIVE
+  ═══════════════════════════════════════════════════════════════════ */
+
+  @media (max-width: 1000px) {
+    nav { padding: 0 24px; }
+    .nav-links li:not(:last-child) { display: none; }
+    .s-inner { padding: 80px 24px; }
+    .how-grid, .folder-grid { grid-template-columns: 1fr 1fr; }
+    .bc-7,.bc-5,.bc-4,.bc-8,.bc-6 { grid-column: span 12; }
+    .resource-grid { grid-template-columns: repeat(2,1fr); }
+    .tech-two, .journal-two { grid-template-columns: 1fr; gap: 48px; }
+    .principles-grid { grid-template-columns: 1fr; }
+    .footer-main { grid-template-columns: 1fr 1fr; }
+    .stats-inner { grid-template-columns: repeat(2,1fr); }
+    .stat-item:nth-child(2) { border-right: none; }
+  }
+
+  @media (max-width: 640px) {
+    .how-grid, .folder-grid, .resource-grid { grid-template-columns: 1fr; }
+    .footer-main { grid-template-columns: 1fr; }
+    .footer-bottom { flex-direction: column; gap: 8px; text-align: center; }
+    .stats-inner { grid-template-columns: 1fr 1fr; }
+  }
+
+  </style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     NAV
+══════════════════════════════════════════════════════════════════ -->
+<nav id="nav">
+  <a href="#" class="nav-logo">
+    <div class="nav-leaf">🌿</div>
+    <span class="nav-wordmark">MindEase</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#how">How It Works</a></li>
+    <li><a href="#features">Features</a></li>
+    <li><a href="#resources">Resources</a></li>
+    <li><a href="#journal">Journal</a></li>
+    <li><a href="#tech">Built With</a></li>
+    <li><a href="https://github.com" class="nav-gh">GitHub →</a></li>
+  </ul>
+</nav>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     HERO
+══════════════════════════════════════════════════════════════════ -->
+<section class="hero">
+
+  <div class="hero-bg">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <!-- Flowing organic curves -->
+    <svg class="hero-lines" viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" style="position:absolute;inset:0;width:100%;height:100%;">
+      <path d="M-60,300 C200,100 400,500 700,280 S1100,80 1500,320" stroke="#4a7a43" stroke-width="1.5" fill="none" opacity="0.4"/>
+      <path d="M-60,420 C200,220 400,620 700,400 S1100,200 1500,440" stroke="#88b880" stroke-width="1" fill="none" opacity="0.35"/>
+      <path d="M-60,540 C200,340 400,740 700,520 S1100,320 1500,560" stroke="#4a7a43" stroke-width="0.75" fill="none" opacity="0.25"/>
+      <!-- Leaf-vein abstract -->
+      <path d="M720,50 C740,200 680,400 700,600 S720,800 740,900" stroke="#88b880" stroke-width="0.8" fill="none" opacity="0.2"/>
+      <path d="M700,300 C600,280 500,320 400,300" stroke="#4a7a43" stroke-width="0.6" fill="none" opacity="0.18"/>
+      <path d="M700,400 C800,380 900,420 1000,400" stroke="#4a7a43" stroke-width="0.6" fill="none" opacity="0.18"/>
+    </svg>
+
+    <!-- Dots -->
+    <svg class="hero-dots" style="top:10%;left:5%;width:180px;height:180px;" viewBox="0 0 180 180">
+      <defs>
+        <pattern id="pd1" x="0" y="0" width="18" height="18" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1.4" fill="#4a7a43"/>
+        </pattern>
+      </defs>
+      <rect width="180" height="180" fill="url(#pd1)"/>
+    </svg>
+    <svg class="hero-dots" style="bottom:12%;right:6%;width:140px;height:140px;" viewBox="0 0 140 140">
+      <defs>
+        <pattern id="pd2" x="0" y="0" width="14" height="14" patternUnits="userSpaceOnUse">
+          <circle cx="2" cy="2" r="1.2" fill="#355c2f"/>
+        </pattern>
+      </defs>
+      <rect width="140" height="140" fill="url(#pd2)"/>
+    </svg>
+
+    <!-- Abstract leaf shapes -->
+    <svg style="position:absolute;top:8%;right:12%;width:110px;opacity:0.08;pointer-events:none" viewBox="0 0 110 110">
+      <ellipse cx="55" cy="55" rx="48" ry="28" fill="#4a7a43" transform="rotate(-30 55 55)"/>
+      <path d="M55,10 L55,100" stroke="#4a7a43" stroke-width="1.5" fill="none" opacity="0.5"/>
+    </svg>
+    <svg style="position:absolute;bottom:18%;left:14%;width:80px;opacity:0.07;pointer-events:none" viewBox="0 0 80 80">
+      <ellipse cx="40" cy="40" rx="35" ry="20" fill="#355c2f" transform="rotate(45 40 40)"/>
+    </svg>
+  </div>
+
+  <div class="hero-content reveal">
+    <div class="eyebrow">
+      <span class="eyebrow-dot"></span>
+      BMCC · CSC211H Honors · Spring 2026
+    </div>
+
+    <h1 class="hero-title">
+      Your campus.<br><em>Your wellness.</em>
+    </h1>
+
+    <p class="hero-sub">
+      MindEase connects BMCC students to real campus resources, guided self-care tools, and a private space to write — all in one quiet, focused desktop app.
+    </p>
+
+    <div class="pill-row">
+      <span class="pill">C++17</span>
+      <span class="pill">Qt 6 Widgets</span>
+      <span class="pill">macOS</span>
+      <span class="pill">Local-first</span>
+      <span class="pill">No login needed</span>
+      <span class="pill">Free to use</span>
+    </div>
+
+    <div class="cta-row">
+      <a href="https://github.com" class="btn-fill">View on GitHub</a>
+      <a href="#how" class="btn-ghost">Explore the App ↓</a>
+    </div>
+  </div>
+
+  <div class="scroll-indicator">
+    <div class="scroll-bar"></div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     STATS STRIP
+══════════════════════════════════════════════════════════════════ -->
+<div class="stats-strip">
+  <div class="stats-inner">
+    <div class="stat-item reveal">
+      <div class="stat-number">3</div>
+      <div class="stat-label">Core Screens</div>
+      <div class="stat-sub">Resources · Toolkit · Journal</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-1">
+      <div class="stat-number">5</div>
+      <div class="stat-label">Stress Categories</div>
+      <div class="stat-sub">Covering every student situation</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-2">
+      <div class="stat-number">8</div>
+      <div class="stat-label">Toolkit Folders</div>
+      <div class="stat-sub">Evidence-based self-care content</div>
+    </div>
+    <div class="stat-item reveal reveal-delay-3">
+      <div class="stat-number">24</div>
+      <div class="stat-label">BMCC Resources</div>
+      <div class="stat-sub">Real offices, real contact info</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     HOW IT WORKS
+══════════════════════════════════════════════════════════════════ -->
+<section class="how-sec" id="how">
+  <!-- organic wave -->
+  <svg style="position:absolute;top:0;left:0;right:0;width:100%;opacity:0.04;pointer-events:none" viewBox="0 0 1440 120" preserveAspectRatio="none">
+    <path d="M0,60 C240,0 480,120 720,60 S1200,0 1440,60 L1440,0 L0,0 Z" fill="#355c2f"/>
+  </svg>
+
+  <div class="s-inner">
+    <span class="s-tag reveal">How It Works</span>
+    <h2 class="s-title reveal">Three screens.<br><em>One calm place.</em></h2>
+    <p class="s-desc reveal">
+      No login. No notifications. No distractions. Open the app, find what you need, and feel a little less alone in it all.
+    </p>
+
+    <div class="how-grid">
+      <div class="how-card reveal reveal-delay-1">
+        <div class="how-icon-badge">✦</div>
+        <div class="how-num">01</div>
+        <div class="how-title">BMCC Resources</div>
+        <p class="how-desc">Tell us what's stressing you — exams, money, immigration, relationships, or health. Instantly see a curated list of real BMCC offices with addresses, phone numbers, hours, and one-click links.</p>
+        <a href="#resources" class="how-learn">Explore resources →</a>
+      </div>
+      <div class="how-card reveal reveal-delay-2">
+        <div class="how-icon-badge">⚙</div>
+        <div class="how-num">02</div>
+        <div class="how-title">Mental Health Toolkit</div>
+        <p class="how-desc">Open any of 8 accordion folders — from academic stress to sleep hygiene. Each folder holds evidence-based tools, BMCC-specific guidance, and curated links. Everything in one scroll.</p>
+        <a href="#toolkit" class="how-learn">See all folders →</a>
+      </div>
+      <div class="how-card reveal reveal-delay-3">
+        <div class="how-icon-badge">📓</div>
+        <div class="how-num">03</div>
+        <div class="how-title">My Journal</div>
+        <p class="how-desc">Write freely with guided prompts and a live clock. Entries are saved as plain text files in your own Documents folder — private, permanent, and completely yours. No cloud, no sync.</p>
+        <a href="#journal" class="how-learn">See the journal →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     QUOTE DIVIDER
+══════════════════════════════════════════════════════════════════ -->
+<div class="quote-divider">
+  <!-- gentle leaf -->
+  <svg style="position:absolute;top:20px;right:80px;width:120px;opacity:0.07;pointer-events:none" viewBox="0 0 120 120">
+    <ellipse cx="60" cy="60" rx="52" ry="28" fill="#4a7a43" transform="rotate(-25 60 60)"/>
+    <path d="M60,12 L60,108" stroke="#4a7a43" stroke-width="1.5" fill="none" opacity="0.6"/>
+  </svg>
+  <div class="quote-inner">
+    <span class="quote-mark">"</span>
+    <p class="quote-text reveal">
+      Caring about student wellness isn't optional — it's the foundation everything else is built on.
+    </p>
+    <p class="quote-attr reveal reveal-delay-1">The Principle Behind MindEase</p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     FEATURES BENTO
+══════════════════════════════════════════════════════════════════ -->
+<section class="features-sec" id="features">
+  <div class="s-inner">
+    <span class="s-tag reveal">Features</span>
+    <h2 class="s-title reveal">Everything a student<br><em>actually needs.</em></h2>
+
+    <div class="bento">
+
+      <!-- BMCC Resources — large dark -->
+      <div class="bc bc-7 bc-dark reveal">
+        <svg style="position:absolute;top:-40px;right:-40px;width:220px;opacity:0.05;pointer-events:none" viewBox="0 0 220 220">
+          <circle cx="110" cy="110" r="110" fill="#ffffff"/>
+        </svg>
+        <svg style="position:absolute;bottom:20px;right:20px;width:90px;opacity:0.06;pointer-events:none" viewBox="0 0 90 90">
+          <ellipse cx="45" cy="45" rx="40" ry="22" fill="#88b880" transform="rotate(-20 45 45)"/>
+        </svg>
+        <span class="bc-emoji">✦</span>
+        <div class="bc-title">BMCC Campus Resources</div>
+        <p class="bc-desc">Real contact info, office hours, and direct browser links — no searching. Five stress categories. Every major student situation is covered, from the LRC Tutoring Center to the Veterans Resource Center to the Immigrant Resource Center.</p>
+        <div class="bc-chips">
+          <span class="chip">Exam & Study</span>
+          <span class="chip">Finance</span>
+          <span class="chip">Immigration</span>
+          <span class="chip">Relationships</span>
+          <span class="chip">Health & Wellness</span>
+        </div>
+      </div>
+
+      <!-- Contact details — light -->
+      <div class="bc bc-5 bc-mist reveal reveal-delay-1">
+        <svg style="position:absolute;bottom:-15px;right:-15px;width:110px;opacity:0.14;pointer-events:none" viewBox="0 0 110 110">
+          <rect x="8" y="8" width="94" height="94" rx="26" fill="#4a7a43" transform="rotate(18 55 55)"/>
+        </svg>
+        <span class="bc-emoji">📍</span>
+        <div class="bc-title">Full Contact Details</div>
+        <p class="bc-desc">Every resource card shows room number, phone number, email, and opening hours. One tap to open the official BMCC page. No copy-pasting, no hunting.</p>
+        <div class="bc-chips">
+          <span class="chip">Address</span>
+          <span class="chip">Phone</span>
+          <span class="chip">Email</span>
+          <span class="chip">Hours</span>
+        </div>
+      </div>
+
+      <!-- Toolkit — white -->
+      <div class="bc bc-8 bc-white reveal reveal-delay-1">
+        <span class="bc-emoji">⚙</span>
+        <div class="bc-title">Mental Health Toolkit</div>
+        <p class="bc-desc">Eight color-coded accordion folders with BMCC-curated content: academic stress, connection and community, identity and care, gratitude and journaling, mindfulness and meditation, music for focus, nutrition and energy, and sleep hygiene. Each folder opens with a smooth animation and shows an intro, resources, and links.</p>
+        <div class="bc-chips">
+          <span class="chip">📚 Academic</span>
+          <span class="chip">🧘 Mindfulness</span>
+          <span class="chip">🌙 Sleep</span>
+          <span class="chip">✏️ Gratitude</span>
+          <span class="chip">🎵 Music</span>
+          <span class="chip">🥗 Nutrition</span>
+          <span class="chip">🌈 Identity</span>
+          <span class="chip">🤝 Community</span>
+        </div>
+      </div>
+
+      <!-- Privacy -->
+      <div class="bc bc-4 bc-sage reveal reveal-delay-2">
+        <svg style="position:absolute;top:0;right:0;width:90px;opacity:0.12;pointer-events:none" viewBox="0 0 90 90">
+          <ellipse cx="55" cy="35" rx="45" ry="38" fill="#355c2f"/>
+        </svg>
+        <span class="bc-emoji">🔒</span>
+        <div class="bc-title">Privacy First, Always</div>
+        <p class="bc-desc">No account. No server. No cloud upload. Journal entries live only on your computer as readable plain text — open them in any editor, keep them forever.</p>
+      </div>
+
+      <!-- Journal teaser -->
+      <div class="bc bc-6 bc-linen reveal reveal-delay-1">
+        <span class="bc-emoji">📓</span>
+        <div class="bc-title">Personal Journal</div>
+        <p class="bc-desc">Write freely with four guided gratitude prompts always visible. A live clock stamps each session. Past entries are saved and browsable in a clean side panel — one click to read any entry.</p>
+        <div class="bc-chips">
+          <span class="chip">Guided Prompts</span>
+          <span class="chip">Live Clock</span>
+          <span class="chip">Past Entries</span>
+          <span class="chip">Local .txt Files</span>
+        </div>
+      </div>
+
+      <!-- Open source -->
+      <div class="bc bc-6 bc-moss reveal reveal-delay-2">
+        <svg style="position:absolute;bottom:-20px;left:-20px;width:130px;opacity:0.09;pointer-events:none" viewBox="0 0 130 130">
+          <circle cx="65" cy="65" r="65" fill="#88b880"/>
+        </svg>
+        <span class="bc-emoji">⌨️</span>
+        <div class="bc-title">Open Source C++</div>
+        <p class="bc-desc">Built in C++17 with Qt 6 Widgets. Clean architecture, fully documented, and open on GitHub. A demonstration of professional-grade Qt application design for academic use.</p>
+        <div class="bc-chips">
+          <span class="chip">C++17</span>
+          <span class="chip">Qt 6</span>
+          <span class="chip">macOS</span>
+          <span class="chip">Open Source</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     TOOLKIT FOLDERS PREVIEW
+══════════════════════════════════════════════════════════════════ -->
+<section class="toolkit-sec" id="toolkit">
+  <div class="s-inner">
+
+    <svg style="position:absolute;top:60px;right:40px;width:200px;opacity:0.05;pointer-events:none" viewBox="0 0 200 200">
+      <path d="M100,10 C140,10 180,40 180,100 S140,190 100,190 20,160 20,100 60,10 100,10 Z" fill="#4a7a43"/>
+      <path d="M100,10 L100,190 M20,100 L180,100" stroke="#ffffff" stroke-width="0.8" fill="none"/>
+    </svg>
+
+    <span class="s-tag reveal">Mental Health Toolkit</span>
+    <h2 class="s-title reveal">Eight folders.<br><em>One peaceful library.</em></h2>
+    <p class="s-desc reveal">
+      Content drawn directly from the BMCC Counseling Center's Mental Health Toolkit and curated external sources. Open any folder to reveal tools, tips, and links.
+    </p>
+
+    <div class="folder-grid">
+
+      <div class="folder-card reveal reveal-delay-1">
+        <div class="folder-icon-wrap" style="background:#eef0fe;">📚</div>
+        <div class="folder-name">Academic Stress</div>
+        <div class="folder-tagline">Planners, procrastination tools, BMCC academic support links.</div>
+        <div class="folder-count">5 RESOURCES</div>
+      </div>
+
+      <div class="folder-card reveal reveal-delay-2">
+        <div class="folder-icon-wrap" style="background:#e4f5ee;">🤝</div>
+        <div class="folder-name">Connection & Community</div>
+        <div class="folder-tagline">Groups, workshops, clubs, and NYC crisis hotlines.</div>
+        <div class="folder-count">5 RESOURCES</div>
+      </div>
+
+      <div class="folder-card reveal reveal-delay-3">
+        <div class="folder-icon-wrap" style="background:#fceef3;">🌈</div>
+        <div class="folder-name">Empowered Identity</div>
+        <div class="folder-tagline">Racial trauma, LGBTQIA+ support, disability justice.</div>
+        <div class="folder-count">5 RESOURCES</div>
+      </div>
+
+      <div class="folder-card reveal reveal-delay-4">
+        <div class="folder-icon-wrap" style="background:#fffbe6;">✏️</div>
+        <div class="folder-name">Gratitude & Journaling</div>
+        <div class="folder-tagline">Prompts, 7-day challenge, science-backed practices.</div>
+        <div class="folder-count">4 RESOURCES</div>
+      </div>
+
+      <div class="folder-card reveal reveal-delay-1">
+        <div class="folder-icon-wrap" style="background:#e4f7fa;">🧘</div>
+        <div class="folder-name">Mindfulness & Meditation</div>
+        <div class="folder-tagline">Guided sessions, breathing, Calm & Headspace links.</div>
+        <div class="folder-count">5 RESOURCES</div>
+      </div>
+
+      <div class="folder-card reveal reveal-delay-2">
+        <div class="folder-icon-wrap" style="background:#f5eafe;">🎵</div>
+        <div class="folder-name">Music for Your Mind</div>
+        <div class="folder-tagline">Playlists for studying, sleep, focus, and relaxation.</div>
+        <div class="folder-count">5 RESOURCES</div>
+      </div>
+
+      <div class="folder-card reveal reveal-delay-3">
+        <div class="folder-icon-wrap" style="background:#edf7ee;">🥗</div>
+        <div class="folder-name">Nutrition & Energy</div>
+        <div class="folder-tagline">Brain foods, Panther Pantry, campus and city fitness.</div>
+        <div class="folder-count">4 RESOURCES</div>
+      </div>
+
+      <div class="folder-card reveal reveal-delay-4">
+        <div class="folder-icon-wrap" style="background:#eaecf8;">🌙</div>
+        <div class="folder-name">Sleep & Relaxation</div>
+        <div class="folder-tagline">Sleep calculator, hygiene tips, stopping doom-scrolling.</div>
+        <div class="folder-count">5 RESOURCES</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     RESOURCES
+══════════════════════════════════════════════════════════════════ -->
+<section class="resources-sec" id="resources">
+
+  <svg style="position:absolute;left:0;top:50%;transform:translateY(-50%);width:280px;opacity:0.04;pointer-events:none" viewBox="0 0 280 400">
+    <path d="M140,20 C200,20 260,80 260,200 S200,380 140,380 20,320 20,200 80,20 140,20 Z" fill="#4a7a43"/>
+    <path d="M140,20 L140,380 M20,200 L260,200 M60,80 L220,320 M220,80 L60,320" stroke="#ffffff" stroke-width="0.6" fill="none"/>
+  </svg>
+
+  <div class="s-inner">
+    <span class="s-tag reveal">BMCC Coverage</span>
+    <h2 class="s-title reveal">Every category<br><em>of student stress.</em></h2>
+    <p class="s-desc reveal">
+      MindEase connects students to actual BMCC staff, rooms, phone numbers, and office hours — not generic internet advice.
+    </p>
+
+    <div class="resource-grid">
+      <div class="res-card reveal reveal-delay-1">
+        <div class="res-icon">📚</div>
+        <div class="res-name">Exam & Study</div>
+        <div class="res-sub">LRC Tutoring (both campuses), PAL sessions, Writing Center, Academic Coaching, Online Tutoring</div>
+        <span class="res-count">5 RESOURCES</span>
+      </div>
+      <div class="res-card reveal reveal-delay-2">
+        <div class="res-icon">💰</div>
+        <div class="res-name">Finance</div>
+        <div class="res-sub">Financial Aid Office, Student Emergency Fund, Panther Pantry, Advocacy & Resource Center</div>
+        <span class="res-count">4 RESOURCES</span>
+      </div>
+      <div class="res-card reveal reveal-delay-3">
+        <div class="res-icon">🌐</div>
+        <div class="res-name">Immigration</div>
+        <div class="res-sub">Immigrant Resource Center, CUNY Legal Services / DACA, Scholarships for DREAMers, Know Your Rights</div>
+        <span class="res-count">4 RESOURCES</span>
+      </div>
+      <div class="res-card reveal reveal-delay-4">
+        <div class="res-icon">💬</div>
+        <div class="res-name">Relationships</div>
+        <div class="res-sub">Personal Counseling Center, Togetherall 24/7, Appointment Booking, Community Referrals</div>
+        <span class="res-count">4 RESOURCES</span>
+      </div>
+      <div class="res-card reveal reveal-delay-5">
+        <div class="res-icon">🏥</div>
+        <div class="res-name">Health & Wellness</div>
+        <div class="res-sub">Health Services, Mental Health Counseling, Veterans Resource Center, Samaritans Hotline, PTSD, Insurance</div>
+        <span class="res-count">7 RESOURCES</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     JOURNAL SPOTLIGHT
+══════════════════════════════════════════════════════════════════ -->
+<section class="journal-sec" id="journal">
+
+  <!-- Botanical accents -->
+  <svg style="position:absolute;top:80px;right:50px;width:160px;opacity:0.07;pointer-events:none" viewBox="0 0 160 160">
+    <ellipse cx="80" cy="80" rx="70" ry="38" fill="#4a7a43" transform="rotate(-30 80 80)"/>
+    <path d="M80,15 L80,145" stroke="#4a7a43" stroke-width="1.5" fill="none" opacity="0.5"/>
+    <path d="M30,70 C55,60 80,58 80,58" stroke="#4a7a43" stroke-width="1" fill="none" opacity="0.4"/>
+    <path d="M130,80 C105,70 80,68 80,68" stroke="#4a7a43" stroke-width="1" fill="none" opacity="0.4"/>
+  </svg>
+  <svg style="position:absolute;bottom:60px;left:40px;width:100px;opacity:0.06;pointer-events:none" viewBox="0 0 100 100">
+    <ellipse cx="50" cy="50" rx="44" ry="24" fill="#355c2f" transform="rotate(50 50 50)"/>
+  </svg>
+
+  <div class="s-inner">
+    <div class="journal-two">
+      <div>
+        <span class="s-tag reveal">My Journal</span>
+        <h2 class="s-title reveal">Write it down.<br><em>Keep it yours.</em></h2>
+        <p class="s-desc reveal" style="margin-bottom:0">
+          Research consistently shows that regular journaling reduces stress, sharpens clarity, and builds resilience over time. MindEase makes the habit effortless.
+        </p>
+
+        <ul class="journal-feature-list">
+          <li class="jf-item reveal reveal-delay-1">
+            <div class="jf-dot">⏱</div>
+            <div class="jf-text">
+              <strong>Live Date & Time</strong>
+              <span>A live clock updates every second. Your entry is stamped with the exact moment automatically — no manual dating needed.</span>
+            </div>
+          </li>
+          <li class="jf-item reveal reveal-delay-2">
+            <div class="jf-dot">✏️</div>
+            <div class="jf-text">
+              <strong>Guided Gratitude Prompts</strong>
+              <span>Four research-backed prompts are always visible. Use them as inspiration or ignore them — write whatever is on your mind.</span>
+            </div>
+          </li>
+          <li class="jf-item reveal reveal-delay-3">
+            <div class="jf-dot">📁</div>
+            <div class="jf-text">
+              <strong>Saved to Your Own Files</strong>
+              <span>Entries save as <code style="font-size:11px;background:var(--mist);padding:1px 5px;border-radius:4px;color:var(--moss)">.txt</code> files in <code style="font-size:11px;background:var(--mist);padding:1px 5px;border-radius:4px;color:var(--moss)">~/Documents/MindEase_Journal/</code> — readable in any app, forever.</span>
+            </div>
+          </li>
+          <li class="jf-item reveal reveal-delay-4">
+            <div class="jf-dot">📖</div>
+            <div class="jf-text">
+              <strong>Browse Past Entries</strong>
+              <span>All saved journals listed newest-first in a side panel. Click any entry to read its full content in a clean, distraction-free preview.</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Mock UI -->
+      <div class="journal-mock reveal reveal-delay-2">
+        <div class="jm-header">
+          <span class="jm-header-left">📓  My Journal</span>
+          <span class="jm-clock">2:30 PM</span>
+        </div>
+        <div class="jm-date-bar">Wednesday, April 15, 2026</div>
+        <div class="jm-body">
+          <div class="jm-prompts">
+            <div class="jm-prompts-title">✏️  Prompts for today</div>
+            <div class="jm-prompt-line">1. What three things brought you peace today?</div>
+            <div class="jm-prompt-line">2. What went well this week, even if something was hard?</div>
+            <div class="jm-prompt-line">3. What everyday object near you are you grateful for?</div>
+            <div class="jm-prompt-line">4. Who made a positive difference in your life this month?</div>
+          </div>
+          <div class="jm-textarea">
+            Today was rough before my midterm, but I took a short walk between study sessions and it actually helped a lot. The Writing Center gave me real feedback on my essay — I feel so much more confident about it now. Small win, but I'll take it…
+          </div>
+          <div class="jm-btns">
+            <div class="jm-save">💾  Save Entry</div>
+            <div class="jm-clear">✕  Clear</div>
+          </div>
+        </div>
+        <div class="jm-footer">
+          <div class="jm-footer-dot"></div>
+          Saved to ~/Documents/MindEase_Journal/ · Private & local
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     PRINCIPLES
+══════════════════════════════════════════════════════════════════ -->
+<section class="principles-sec">
+  <div class="s-inner">
+    <span class="s-tag reveal">Design Principles</span>
+    <h2 class="s-title reveal">Why it's built<br><em>this way.</em></h2>
+
+    <div class="principles-grid">
+      <div class="principle-item reveal">
+        <div class="principle-num">01 — Principle</div>
+        <div class="principle-title">Name the stressor first</div>
+        <p class="principle-desc">Before showing resources, the app asks what you're stressed about. Naming it reduces cognitive load and makes the experience feel personal rather than encyclopedic.</p>
+      </div>
+      <div class="principle-item reveal reveal-delay-1">
+        <div class="principle-num">02 — Principle</div>
+        <div class="principle-title">Local-first, privacy-first</div>
+        <p class="principle-desc">A wellness app for students discussing personal struggles should never upload data to a server. Journal entries stay on your computer — always accessible, never shared.</p>
+      </div>
+      <div class="principle-item reveal reveal-delay-2">
+        <div class="principle-num">03 — Principle</div>
+        <div class="principle-title">Real information only</div>
+        <p class="principle-desc">Every resource card shows the actual room number, phone number, and email address — not a general "visit the website" prompt. Friction kills follow-through.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     TECH / C++
+══════════════════════════════════════════════════════════════════ -->
+<section class="tech-sec" id="tech">
+  <div class="tech-grid-overlay"></div>
+
+  <!-- Large abstract leaf in corner -->
+  <svg style="position:absolute;bottom:-60px;right:-60px;width:320px;opacity:0.04;pointer-events:none" viewBox="0 0 320 320">
+    <ellipse cx="160" cy="160" rx="150" ry="90" fill="#88b880" transform="rotate(-20 160 160)"/>
+    <path d="M160,20 L160,300" stroke="#88b880" stroke-width="2" fill="none" opacity="0.4"/>
+  </svg>
+
+  <div class="s-inner">
+    <span class="s-tag reveal">Technical</span>
+    <h2 class="s-title reveal">Built with<br><em>modern C++.</em></h2>
+    <p class="s-desc reveal">Every feature is a real C++ or Qt concept in action — not a textbook example, but a working, polished application students actually use.</p>
+
+    <div class="tech-two">
+      <div class="reveal">
+        <p class="tech-blockquote">
+          "Clean code is not written by following rules. It is written by <strong>someone who cares.</strong>"
+        </p>
+        <div class="tech-pills">
+          <span class="tech-pill">C++17</span>
+          <span class="tech-pill">Qt 6 Widgets</span>
+          <span class="tech-pill">qmake</span>
+          <span class="tech-pill">QSS Theming</span>
+          <span class="tech-pill">QFile · QTextStream</span>
+          <span class="tech-pill">QStandardPaths</span>
+          <span class="tech-pill">QDateTime</span>
+          <span class="tech-pill">QDesktopServices</span>
+          <span class="tech-pill">QTimer · QMap</span>
+        </div>
+      </div>
+
+      <div class="concept-stack reveal reveal-delay-1">
+        <div class="concept-item">
+          <span class="concept-key">OOP / Classes</span>
+          <span class="concept-val">All screens are <code>QWidget</code> subclasses; <code>MainWindow</code> inherits <code>QMainWindow</code></span>
+        </div>
+        <div class="concept-item">
+          <span class="concept-key">Lambdas</span>
+          <span class="concept-val">Signal connections use <code>[this, id]()</code> captures throughout all modules</span>
+        </div>
+        <div class="concept-item">
+          <span class="concept-key">Signals & Slots</span>
+          <span class="concept-val">Qt event system wires navigation, accordion toggles, journal saves, and clock ticks</span>
+        </div>
+        <div class="concept-item">
+          <span class="concept-key">File I/O</span>
+          <span class="concept-val"><code>QFile</code> + <code>QTextStream</code> for persistent read/write of journal entries</span>
+        </div>
+        <div class="concept-item">
+          <span class="concept-key">Qt Containers</span>
+          <span class="concept-val"><code>QMap</code>, <code>QList</code>, <code>QVector</code>, <code>QStringList</code> across all modules</span>
+        </div>
+        <div class="concept-item">
+          <span class="concept-key">Dynamic UI</span>
+          <span class="concept-val">Resource cards, topic cards, and accordion folders built at runtime from static data</span>
+        </div>
+        <div class="concept-item">
+          <span class="concept-key">C++17 Structs</span>
+          <span class="concept-val"><code>ResourceInfo</code>, <code>FolderDef</code>, <code>ToolItem</code> with brace initialization</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     FOOTER
+══════════════════════════════════════════════════════════════════ -->
+<footer>
+  <div class="footer-wave"></div>
+
+  <!-- Abstract circles -->
+  <svg style="position:absolute;top:40px;right:60px;width:200px;opacity:0.03;pointer-events:none" viewBox="0 0 200 200">
+    <circle cx="100" cy="100" r="95" stroke="#88b880" stroke-width="1" fill="none"/>
+    <circle cx="100" cy="100" r="70" stroke="#88b880" stroke-width="1" fill="none"/>
+    <circle cx="100" cy="100" r="45" stroke="#88b880" stroke-width="1" fill="none"/>
+  </svg>
+
+  <div class="footer-main">
+    <div class="footer-brand">
+      <div class="fb-logo">
+        <div class="fb-leaf">🌿</div>
+        <span class="fb-name">MindEase</span>
+      </div>
+      <p class="fb-desc">
+        A Qt/C++ desktop wellness companion for BMCC students. Built with care for CSC211H Advanced Programming Techniques (Honors), Spring 2026.
+      </p>
+      <div class="fb-badges">
+        <span class="fb-badge">C++17</span>
+        <span class="fb-badge">Qt 6 Widgets</span>
+        <span class="fb-badge">macOS</span>
+        <span class="fb-badge">BMCC / CUNY</span>
+        <span class="fb-badge">Open Source</span>
+      </div>
+    </div>
+
+    <div>
+      <div class="footer-col-head">Screens</div>
+      <div class="footer-col-links">
+        <a href="#resources">✦ BMCC Resources</a>
+        <a href="#toolkit">⚙ Mental Health Toolkit</a>
+        <a href="#journal">📓 My Journal</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="footer-col-head">Resources</div>
+      <div class="footer-col-links">
+        <a href="https://www.bmcc.cuny.edu/student-affairs/counseling/" target="_blank">BMCC Counseling Center</a>
+        <a href="https://www.bmcc.cuny.edu/students/lrc/" target="_blank">Learning Resource Center</a>
+        <a href="https://www.bmcc.cuny.edu/student-affairs/arc/" target="_blank">Advocacy & Resource Center</a>
+        <a href="https://www.bmcc.cuny.edu/student-affairs/veterans-resource-center/" target="_blank">Veterans Resource Center</a>
+      </div>
+    </div>
+
+    <div>
+      <div class="footer-col-head">Project</div>
+      <div class="footer-col-links">
+        <a href="https://github.com" target="_blank">GitHub Repository</a>
+        <a href="https://www.qt.io" target="_blank">Qt Framework</a>
+        <a href="https://www.bmcc.cuny.edu/student-affairs/counseling/your-mental-health-toolkit/" target="_blank">Mental Health Toolkit Source</a>
+        <a href="#how">Back to top ↑</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <p>© 2026 MindEase · Built for BMCC / CUNY · Academic use only</p>
+    <span>C++17 · Qt 6 · macOS · Spring 2026</span>
+  </div>
+</footer>
+
+<!-- ══════════════════════════════════════════════════════════════════
+     SCRIPTS
+══════════════════════════════════════════════════════════════════ -->
+<script>
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Nav shadow on scroll
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 20);
+  }, { passive: true });
+</script>
+
+</body>
+</html>

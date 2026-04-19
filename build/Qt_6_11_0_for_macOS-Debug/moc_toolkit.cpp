@@ -52,7 +52,7 @@ template <> constexpr inline auto Toolkit::qt_create_metaobjectdata<qt_meta_tag_
             qt_methods, qt_properties, qt_enums);
 }
 Q_CONSTINIT const QMetaObject Toolkit::staticMetaObject = { {
-    QMetaObject::SuperData::link<QWidget::staticMetaObject>(),
+    QMetaObject::SuperData::link<Screen::staticMetaObject>(),
     qt_staticMetaObjectStaticContent<qt_meta_tag_ZN7ToolkitE_t>.stringdata,
     qt_staticMetaObjectStaticContent<qt_meta_tag_ZN7ToolkitE_t>.data,
     qt_static_metacall,
@@ -80,12 +80,12 @@ void *Toolkit::qt_metacast(const char *_clname)
     if (!_clname) return nullptr;
     if (!strcmp(_clname, qt_staticMetaObjectStaticContent<qt_meta_tag_ZN7ToolkitE_t>.strings))
         return static_cast<void*>(this);
-    return QWidget::qt_metacast(_clname);
+    return Screen::qt_metacast(_clname);
 }
 
 int Toolkit::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
 {
-    _id = QWidget::qt_metacall(_c, _id, _a);
+    _id = Screen::qt_metacall(_c, _id, _a);
     return _id;
 }
 QT_WARNING_POP
