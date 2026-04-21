@@ -17,7 +17,7 @@ CXX           = /Library/Developer/CommandLineTools/usr/bin/clang++
 DEFINES       = -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g $(EXPORT_ARCH_ARGS) -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -mmacosx-version-min=13 -Wall -Wextra $(DEFINES)
 CXXFLAGS      = -pipe -stdlib=libc++ -Wno-implicit-function-declaration -g -std=gnu++1z $(EXPORT_ARCH_ARGS) -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -mmacosx-version-min=13 -Wall -Wextra $(DEFINES)
-INCPATH       = -I../../../MindEase -I. -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers -I. -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenGL.framework/Headers -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenGL.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/macx-clang -F/Users/phyothihaoo/Qt/6.11.0/macos/lib
+INCPATH       = -I../../../MindEase -I. -I../../../MindEase -I../../app -I../../core -I../../screens -I../../models -I../../storage -I../../legacy -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers -I. -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenGL.framework/Headers -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks/OpenGL.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/macx-clang -F/Users/phyothihaoo/Qt/6.11.0/macos/lib
 QMAKE         = /Users/phyothihaoo/Qt/6.11.0/macos/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -52,13 +52,15 @@ OBJECTS_DIR   = ./
 
 ####### Files
 
-SOURCES       = ../../main.cpp \
-		../../mainwindow.cpp \
-		../../screen.cpp \
-		../../recommendations.cpp \
-		../../toolkit.cpp \
-		../../journalentry.cpp \
-		../../journal.cpp moc_mainwindow.cpp \
+SOURCES       = ../../app/main.cpp \
+		../../app/mainwindow.cpp \
+		../../core/screen.cpp \
+		../../screens/recommendations.cpp \
+		../../screens/toolkit.cpp \
+		../../screens/journal.cpp \
+		../../models/journalentry.cpp \
+		../../storage/journalstorage.cpp qrc_resources.cpp \
+		moc_mainwindow.cpp \
 		moc_screen.cpp \
 		moc_recommendations.cpp \
 		moc_toolkit.cpp \
@@ -68,8 +70,10 @@ OBJECTS       = main.o \
 		screen.o \
 		recommendations.o \
 		toolkit.o \
-		journalentry.o \
 		journal.o \
+		journalentry.o \
+		journalstorage.o \
+		qrc_resources.o \
 		moc_mainwindow.o \
 		moc_screen.o \
 		moc_recommendations.o \
@@ -324,18 +328,20 @@ DIST          = /Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/features/spec_pre.prf
 		/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/features/exceptions.prf \
 		/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/features/yacc.prf \
 		/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/features/lex.prf \
-		../../../../MindEase.pro ../../mainwindow.h \
-		../../screen.h \
-		../../recommendations.h \
-		../../toolkit.h \
-		../../journalentry.h \
-		../../journal.h ../../main.cpp \
-		../../mainwindow.cpp \
-		../../screen.cpp \
-		../../recommendations.cpp \
-		../../toolkit.cpp \
-		../../journalentry.cpp \
-		../../journal.cpp
+		../../../../MindEase.pro ../../app/mainwindow.h \
+		../../core/screen.h \
+		../../screens/recommendations.h \
+		../../screens/toolkit.h \
+		../../screens/journal.h \
+		../../models/journalentry.h \
+		../../storage/journalstorage.h ../../app/main.cpp \
+		../../app/mainwindow.cpp \
+		../../core/screen.cpp \
+		../../screens/recommendations.cpp \
+		../../screens/toolkit.cpp \
+		../../screens/journal.cpp \
+		../../models/journalentry.cpp \
+		../../storage/journalstorage.cpp
 QMAKE_TARGET  = MindEase
 DESTDIR       = 
 TARGET        = MindEase.app/Contents/MacOS/MindEase
@@ -610,6 +616,7 @@ Makefile: ../../MindEase.pro /Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/macx-cla
 		/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/features/yacc.prf \
 		/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/features/lex.prf \
 		../../MindEase.pro \
+		../../resources/resources.qrc \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Resources/QtWidgets.prl \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Resources/QtGui.prl \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Resources/QtCore.prl
@@ -864,6 +871,7 @@ Makefile: ../../MindEase.pro /Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/macx-cla
 /Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/features/yacc.prf:
 /Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/features/lex.prf:
 ../../MindEase.pro:
+../../resources/resources.qrc:
 /Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Resources/QtWidgets.prl:
 /Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Resources/QtGui.prl:
 /Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Resources/QtCore.prl:
@@ -891,8 +899,9 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
-	$(COPY_FILE) --parents ../../mainwindow.h ../../screen.h ../../recommendations.h ../../toolkit.h ../../journalentry.h ../../journal.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../main.cpp ../../mainwindow.cpp ../../screen.cpp ../../recommendations.cpp ../../toolkit.cpp ../../journalentry.cpp ../../journal.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../resources/resources.qrc $(DISTDIR)/
+	$(COPY_FILE) --parents ../../app/mainwindow.h ../../core/screen.h ../../screens/recommendations.h ../../screens/toolkit.h ../../screens/journal.h ../../models/journalentry.h ../../storage/journalstorage.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../app/main.cpp ../../app/mainwindow.cpp ../../core/screen.cpp ../../screens/recommendations.cpp ../../screens/toolkit.cpp ../../screens/journal.cpp ../../models/journalentry.cpp ../../storage/journalstorage.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -919,12 +928,18 @@ check: first
 
 benchmark: first
 
-compiler_rcc_make_all:
+compiler_rcc_make_all: qrc_resources.cpp
 compiler_rcc_clean:
+	-$(DEL_FILE) qrc_resources.cpp
+qrc_resources.cpp: ../../resources/resources.qrc \
+		/Users/phyothihaoo/Qt/6.11.0/macos/libexec/rcc \
+		../../resources/2025-KYR-Final-01.13.202592.pdf
+	/Users/phyothihaoo/Qt/6.11.0/macos/libexec/rcc -name resources --no-zstd ../../resources/resources.qrc -o qrc_resources.cpp
+
 compiler_moc_header_make_all: moc_mainwindow.cpp moc_screen.cpp moc_recommendations.cpp moc_toolkit.cpp moc_journal.cpp
 compiler_moc_header_clean:
 	-$(DEL_FILE) moc_mainwindow.cpp moc_screen.cpp moc_recommendations.cpp moc_toolkit.cpp moc_journal.cpp
-moc_mainwindow.cpp: ../../mainwindow.h \
+moc_mainwindow.cpp: ../../app/mainwindow.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QMainWindow \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QStackedWidget \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QPushButton \
@@ -933,45 +948,51 @@ moc_mainwindow.cpp: ../../mainwindow.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QLabel \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QVector \
 		/Users/phyothihaoo/Qt/6.11.0/macos/libexec/moc
-	/Users/phyothihaoo/Qt/6.11.0/macos/libexec/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -D__cplusplus=201402L -D__APPLE_CC__=6000 -D__clang__ -D__clang_major__=21 -D__clang_minor__=0 -D__clang_patchlevel__=0 -D__GNUC__=4 -D__GNUC_MINOR__=2 -D__GNUC_PATCHLEVEL__=1 -I/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/macx-clang -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase' -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers -I. -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/21/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/Library/Developer/CommandLineTools/usr/include -F/Users/phyothihaoo/Qt/6.11.0/macos/lib ../../mainwindow.h -o moc_mainwindow.cpp
+	/Users/phyothihaoo/Qt/6.11.0/macos/libexec/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -D__cplusplus=201402L -D__APPLE_CC__=6000 -D__clang__ -D__clang_major__=21 -D__clang_minor__=0 -D__clang_patchlevel__=0 -D__GNUC__=4 -D__GNUC_MINOR__=2 -D__GNUC_PATCHLEVEL__=1 -I/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/macx-clang -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/app' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/core' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/screens' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/models' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/storage' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/legacy' -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers -I. -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/21/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/Library/Developer/CommandLineTools/usr/include -F/Users/phyothihaoo/Qt/6.11.0/macos/lib ../../app/mainwindow.h -o moc_mainwindow.cpp
 
-moc_screen.cpp: ../../screen.h \
+moc_screen.cpp: ../../core/screen.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QWidget \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QVBoxLayout \
 		/Users/phyothihaoo/Qt/6.11.0/macos/libexec/moc
-	/Users/phyothihaoo/Qt/6.11.0/macos/libexec/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -D__cplusplus=201402L -D__APPLE_CC__=6000 -D__clang__ -D__clang_major__=21 -D__clang_minor__=0 -D__clang_patchlevel__=0 -D__GNUC__=4 -D__GNUC_MINOR__=2 -D__GNUC_PATCHLEVEL__=1 -I/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/macx-clang -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase' -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers -I. -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/21/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/Library/Developer/CommandLineTools/usr/include -F/Users/phyothihaoo/Qt/6.11.0/macos/lib ../../screen.h -o moc_screen.cpp
+	/Users/phyothihaoo/Qt/6.11.0/macos/libexec/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -D__cplusplus=201402L -D__APPLE_CC__=6000 -D__clang__ -D__clang_major__=21 -D__clang_minor__=0 -D__clang_patchlevel__=0 -D__GNUC__=4 -D__GNUC_MINOR__=2 -D__GNUC_PATCHLEVEL__=1 -I/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/macx-clang -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/app' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/core' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/screens' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/models' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/storage' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/legacy' -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers -I. -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/21/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/Library/Developer/CommandLineTools/usr/include -F/Users/phyothihaoo/Qt/6.11.0/macos/lib ../../core/screen.h -o moc_screen.cpp
 
-moc_recommendations.cpp: ../../recommendations.h \
-		../../screen.h \
+moc_recommendations.cpp: ../../screens/recommendations.h \
+		../../core/screen.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QWidget \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QVBoxLayout \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QStackedWidget \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QLineEdit \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QLabel \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QVector \
 		/Users/phyothihaoo/Qt/6.11.0/macos/libexec/moc
-	/Users/phyothihaoo/Qt/6.11.0/macos/libexec/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -D__cplusplus=201402L -D__APPLE_CC__=6000 -D__clang__ -D__clang_major__=21 -D__clang_minor__=0 -D__clang_patchlevel__=0 -D__GNUC__=4 -D__GNUC_MINOR__=2 -D__GNUC_PATCHLEVEL__=1 -I/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/macx-clang -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase' -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers -I. -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/21/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/Library/Developer/CommandLineTools/usr/include -F/Users/phyothihaoo/Qt/6.11.0/macos/lib ../../recommendations.h -o moc_recommendations.cpp
+	/Users/phyothihaoo/Qt/6.11.0/macos/libexec/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -D__cplusplus=201402L -D__APPLE_CC__=6000 -D__clang__ -D__clang_major__=21 -D__clang_minor__=0 -D__clang_patchlevel__=0 -D__GNUC__=4 -D__GNUC_MINOR__=2 -D__GNUC_PATCHLEVEL__=1 -I/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/macx-clang -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/app' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/core' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/screens' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/models' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/storage' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/legacy' -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers -I. -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/21/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/Library/Developer/CommandLineTools/usr/include -F/Users/phyothihaoo/Qt/6.11.0/macos/lib ../../screens/recommendations.h -o moc_recommendations.cpp
 
-moc_toolkit.cpp: ../../toolkit.h \
-		../../screen.h \
+moc_toolkit.cpp: ../../screens/toolkit.h \
+		../../core/screen.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QWidget \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QVBoxLayout \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QMap \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QFrame \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QLabel \
 		/Users/phyothihaoo/Qt/6.11.0/macos/libexec/moc
-	/Users/phyothihaoo/Qt/6.11.0/macos/libexec/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -D__cplusplus=201402L -D__APPLE_CC__=6000 -D__clang__ -D__clang_major__=21 -D__clang_minor__=0 -D__clang_patchlevel__=0 -D__GNUC__=4 -D__GNUC_MINOR__=2 -D__GNUC_PATCHLEVEL__=1 -I/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/macx-clang -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase' -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers -I. -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/21/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/Library/Developer/CommandLineTools/usr/include -F/Users/phyothihaoo/Qt/6.11.0/macos/lib ../../toolkit.h -o moc_toolkit.cpp
+	/Users/phyothihaoo/Qt/6.11.0/macos/libexec/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -D__cplusplus=201402L -D__APPLE_CC__=6000 -D__clang__ -D__clang_major__=21 -D__clang_minor__=0 -D__clang_patchlevel__=0 -D__GNUC__=4 -D__GNUC_MINOR__=2 -D__GNUC_PATCHLEVEL__=1 -I/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/macx-clang -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/app' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/core' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/screens' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/models' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/storage' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/legacy' -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers -I. -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/21/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/Library/Developer/CommandLineTools/usr/include -F/Users/phyothihaoo/Qt/6.11.0/macos/lib ../../screens/toolkit.h -o moc_toolkit.cpp
 
-moc_journal.cpp: ../../journal.h \
-		../../screen.h \
+moc_journal.cpp: ../../screens/journal.h \
+		../../core/screen.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QWidget \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QVBoxLayout \
-		../../journalentry.h \
+		../../storage/journalstorage.h \
+		../../models/journalentry.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QString \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QDateTime \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QVector \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QTextEdit \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QLabel \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QListWidget \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QPushButton \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QTimer \
 		/Users/phyothihaoo/Qt/6.11.0/macos/libexec/moc
-	/Users/phyothihaoo/Qt/6.11.0/macos/libexec/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -D__cplusplus=201402L -D__APPLE_CC__=6000 -D__clang__ -D__clang_major__=21 -D__clang_minor__=0 -D__clang_patchlevel__=0 -D__GNUC__=4 -D__GNUC_MINOR__=2 -D__GNUC_PATCHLEVEL__=1 -I/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/macx-clang -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase' -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers -I. -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/21/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/Library/Developer/CommandLineTools/usr/include -F/Users/phyothihaoo/Qt/6.11.0/macos/lib ../../journal.h -o moc_journal.cpp
+	/Users/phyothihaoo/Qt/6.11.0/macos/libexec/moc $(DEFINES) -D__APPLE__ -D__GNUC__=4 -D__APPLE_CC__ -D__cplusplus=201402L -D__APPLE_CC__=6000 -D__clang__ -D__clang_major__=21 -D__clang_minor__=0 -D__clang_patchlevel__=0 -D__GNUC__=4 -D__GNUC_MINOR__=2 -D__GNUC_PATCHLEVEL__=1 -I/Users/phyothihaoo/Qt/6.11.0/macos/mkspecs/macx-clang -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/app' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/core' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/screens' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/models' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/storage' -I'/Users/phyothihaoo/Desktop/CUNY/SPRING 2026/CSC211H_ADVANCED_PROGRAMMING_TECHNIQUES(HONORS)/HONORS_PROJECT/MindEase/legacy' -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Headers -I/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers -I. -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include/c++/v1 -I/Library/Developer/CommandLineTools/usr/lib/clang/21/include -I/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/include -I/Library/Developer/CommandLineTools/usr/include -F/Users/phyothihaoo/Qt/6.11.0/macos/lib ../../screens/journal.h -o moc_journal.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -987,11 +1008,11 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_header_clean 
+compiler_clean: compiler_rcc_clean compiler_moc_header_clean 
 
 ####### Compile
 
-main.o: ../../main.cpp ../../mainwindow.h \
+main.o: ../../app/main.cpp ../../app/mainwindow.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QMainWindow \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QStackedWidget \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QPushButton \
@@ -1000,9 +1021,9 @@ main.o: ../../main.cpp ../../mainwindow.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QLabel \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QVector \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QApplication
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../../main.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o main.o ../../app/main.cpp
 
-mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
+mainwindow.o: ../../app/mainwindow.cpp ../../app/mainwindow.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QMainWindow \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QStackedWidget \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QPushButton \
@@ -1010,44 +1031,53 @@ mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QVBoxLayout \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QLabel \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QVector \
-		../../screen.h \
+		../../core/screen.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QWidget \
-		../../recommendations.h \
-		../../toolkit.h \
+		../../screens/recommendations.h \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QLineEdit \
+		../../screens/toolkit.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QMap \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QFrame \
-		../../journal.h \
-		../../journalentry.h \
+		../../screens/journal.h \
+		../../storage/journalstorage.h \
+		../../models/journalentry.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QString \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QDateTime \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QTextEdit \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QListWidget \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QTimer
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../../mainwindow.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../../app/mainwindow.cpp
 
-screen.o: ../../screen.cpp ../../screen.h \
+screen.o: ../../core/screen.cpp ../../core/screen.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QWidget \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QVBoxLayout \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QLabel \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QFrame
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o screen.o ../../screen.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o screen.o ../../core/screen.cpp
 
-recommendations.o: ../../recommendations.cpp ../../recommendations.h \
-		../../screen.h \
+recommendations.o: ../../screens/recommendations.cpp ../../screens/recommendations.h \
+		../../core/screen.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QWidget \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QVBoxLayout \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QStackedWidget \
-		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QHBoxLayout \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QLineEdit \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QLabel \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QVector \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QHBoxLayout \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QFrame \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QScrollArea \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QPushButton \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QSizePolicy \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Headers/QDesktopServices \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QDir \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QFile \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QFileInfo \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QStandardPaths \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QUrl
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o recommendations.o ../../recommendations.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o recommendations.o ../../screens/recommendations.cpp
 
-toolkit.o: ../../toolkit.cpp ../../toolkit.h \
-		../../screen.h \
+toolkit.o: ../../screens/toolkit.cpp ../../screens/toolkit.h \
+		../../core/screen.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QWidget \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QVBoxLayout \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QMap \
@@ -1059,36 +1089,53 @@ toolkit.o: ../../toolkit.cpp ../../toolkit.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QSizePolicy \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Headers/QDesktopServices \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QUrl
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o toolkit.o ../../toolkit.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o toolkit.o ../../screens/toolkit.cpp
 
-journalentry.o: ../../journalentry.cpp ../../journalentry.h \
-		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QString \
-		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QDateTime \
-		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QFile \
-		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QFileInfo \
-		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QTextStream \
-		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QDir
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o journalentry.o ../../journalentry.cpp
-
-journal.o: ../../journal.cpp ../../journal.h \
-		../../screen.h \
+journal.o: ../../screens/journal.cpp ../../screens/journal.h \
+		../../core/screen.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QWidget \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QVBoxLayout \
-		../../journalentry.h \
+		../../storage/journalstorage.h \
+		../../models/journalentry.h \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QString \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QDateTime \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QVector \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QTextEdit \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QLabel \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QListWidget \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QPushButton \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QTimer \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QHBoxLayout \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QFrame \
-		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QPushButton \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QListWidgetItem \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QDir \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QFileInfo \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QMessageBox \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtGui.framework/Headers/QShortcut \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QSplitter \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QStandardPaths \
 		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtWidgets.framework/Headers/QSizePolicy
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o journal.o ../../journal.cpp
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o journal.o ../../screens/journal.cpp
+
+journalentry.o: ../../models/journalentry.cpp ../../models/journalentry.h \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QString \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QDateTime
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o journalentry.o ../../models/journalentry.cpp
+
+journalstorage.o: ../../storage/journalstorage.cpp ../../storage/journalstorage.h \
+		../../models/journalentry.h \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QString \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QDateTime \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QVector \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QDir \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QFile \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QFileInfo \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QStandardPaths \
+		/Users/phyothihaoo/Qt/6.11.0/macos/lib/QtCore.framework/Headers/QTextStream
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o journalstorage.o ../../storage/journalstorage.cpp
+
+qrc_resources.o: qrc_resources.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_resources.o qrc_resources.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

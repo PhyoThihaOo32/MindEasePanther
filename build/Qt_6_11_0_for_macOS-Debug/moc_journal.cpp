@@ -6,7 +6,7 @@
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "../../journal.h"
+#include "../../screens/journal.h"
 #include <QtGui/qtextcursor.h>
 #include <QtCore/qmetatype.h>
 
@@ -42,6 +42,7 @@ template <> constexpr inline auto Journal::qt_create_metaobjectdata<qt_meta_tag_
         "Journal",
         "saveEntry",
         "",
+        "deleteSelectedEntry",
         "clearEditor",
         "loadSelectedEntry",
         "QListWidgetItem*",
@@ -52,14 +53,16 @@ template <> constexpr inline auto Journal::qt_create_metaobjectdata<qt_meta_tag_
     QtMocHelpers::UintData qt_methods {
         // Slot 'saveEntry'
         QtMocHelpers::SlotData<void()>(1, 2, QMC::AccessPrivate, QMetaType::Void),
-        // Slot 'clearEditor'
+        // Slot 'deleteSelectedEntry'
         QtMocHelpers::SlotData<void()>(3, 2, QMC::AccessPrivate, QMetaType::Void),
+        // Slot 'clearEditor'
+        QtMocHelpers::SlotData<void()>(4, 2, QMC::AccessPrivate, QMetaType::Void),
         // Slot 'loadSelectedEntry'
-        QtMocHelpers::SlotData<void(QListWidgetItem *)>(4, 2, QMC::AccessPrivate, QMetaType::Void, {{
-            { 0x80000000 | 5, 6 },
+        QtMocHelpers::SlotData<void(QListWidgetItem *)>(5, 2, QMC::AccessPrivate, QMetaType::Void, {{
+            { 0x80000000 | 6, 7 },
         }}),
         // Slot 'updateClock'
-        QtMocHelpers::SlotData<void()>(7, 2, QMC::AccessPrivate, QMetaType::Void),
+        QtMocHelpers::SlotData<void()>(8, 2, QMC::AccessPrivate, QMetaType::Void),
     };
     QtMocHelpers::UintData qt_properties {
     };
@@ -84,9 +87,10 @@ void Journal::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, voi
     if (_c == QMetaObject::InvokeMetaMethod) {
         switch (_id) {
         case 0: _t->saveEntry(); break;
-        case 1: _t->clearEditor(); break;
-        case 2: _t->loadSelectedEntry((*reinterpret_cast<std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
-        case 3: _t->updateClock(); break;
+        case 1: _t->deleteSelectedEntry(); break;
+        case 2: _t->clearEditor(); break;
+        case 3: _t->loadSelectedEntry((*reinterpret_cast<std::add_pointer_t<QListWidgetItem*>>(_a[1]))); break;
+        case 4: _t->updateClock(); break;
         default: ;
         }
     }
@@ -111,14 +115,14 @@ int Journal::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 4)
+        if (_id < 5)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 4;
+        _id -= 5;
     }
     if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 4)
+        if (_id < 5)
             *reinterpret_cast<QMetaType *>(_a[0]) = QMetaType();
-        _id -= 4;
+        _id -= 5;
     }
     return _id;
 }

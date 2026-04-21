@@ -8,19 +8,33 @@ QMAKE_CXXFLAGS += -Wno-implicit-function-declaration
 TARGET = MindEase
 TEMPLATE = app
 
+INCLUDEPATH += \
+    $$PWD \
+    $$PWD/app \
+    $$PWD/core \
+    $$PWD/screens \
+    $$PWD/models \
+    $$PWD/storage \
+    $$PWD/legacy
+
 SOURCES += \
-    main.cpp \
-    mainwindow.cpp \
-    screen.cpp \
-    recommendations.cpp \
-    toolkit.cpp \
-    journalentry.cpp \
-    journal.cpp
+    app/main.cpp \
+    app/mainwindow.cpp \
+    core/screen.cpp \
+    screens/recommendations.cpp \
+    screens/toolkit.cpp \
+    screens/journal.cpp \
+    models/journalentry.cpp \
+    storage/journalstorage.cpp
 
 HEADERS += \
-    mainwindow.h \
-    screen.h \
-    recommendations.h \
-    toolkit.h \
-    journalentry.h \
-    journal.h
+    app/mainwindow.h \
+    core/screen.h \
+    screens/recommendations.h \
+    screens/toolkit.h \
+    screens/journal.h \
+    models/journalentry.h \
+    storage/journalstorage.h
+
+RESOURCES += \
+    resources/resources.qrc

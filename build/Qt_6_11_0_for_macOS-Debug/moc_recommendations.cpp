@@ -6,7 +6,8 @@
 ** WARNING! All changes made in this file will be lost!
 *****************************************************************************/
 
-#include "../../recommendations.h"
+#include "../../screens/recommendations.h"
+#include <QtGui/qtextcursor.h>
 #include <QtCore/qmetatype.h>
 
 #include <QtCore/qtmochelpers.h>

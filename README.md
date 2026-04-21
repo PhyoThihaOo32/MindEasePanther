@@ -95,7 +95,7 @@ A fully private, local journaling screen with persistent file storage:
 | **Aggregate initialization** | C++17 brace-init for `ResourceInfo`, `TopicInfo`, `FolderDef`, `ToolItem` structs |
 | **Lambdas** | Signal connections use `[this, id]()` lambdas; `addUrlBtn` is a local lambda inside `makeResourceCard` |
 | **Qt Signals & Slots** | `QPushButton::clicked` → `switchScreen`, `toggleFolder`, `saveEntry`, `loadSelectedEntry`, `updateClock` |
-| **File I/O** | `journal.cpp` — `saveEntry()` writes, `loadSelectedEntry()` reads, using `QFile` + `QTextStream` |
+| **File I/O** | `storage/journalstorage.cpp` — centralizes save/load/list logic using `QFile`, `QDir`, and `QTextStream` |
 | **STL / Qt containers** | `QList<ResourceInfo>`, `QMap<QString, QFrame*>`, `QMap<QString, QLabel*>`, `QVector<QPushButton*>` |
 | **Dynamic UI** | Resource cards, topic cards, accordion folders, and tool items all built at runtime in loops from static data |
 | **Qt Stylesheets (QSS)** | Full CSS-like theming: `border-left`, `border-radius`, `hover`, `checked`, object-name selectors |
@@ -106,12 +106,21 @@ A fully private, local journaling screen with persistent file storage:
 
 ```
 MindEase/
-├── MindEase.pro              ← qmake project file (open this in Qt Creator)
-├── main.cpp                  ← App entry point
-├── mainwindow.h / .cpp       ← App shell — sidebar navigation + screen switcher
-├── recommendations.h / .cpp  ← BMCC Resources (topic picker + 5 detail pages)
-├── toolkit.h / .cpp          ← Mental Health Toolkit (8 accordion folders)
-├── journal.h / .cpp          ← My Journal (write, save, browse past entries)
+├── MindEase.pro                    ← qmake project file
+├── app/
+│   ├── main.cpp                    ← app entry point
+│   └── mainwindow.h / .cpp         ← app shell + sidebar navigation
+├── core/
+│   └── screen.h / .cpp             ← abstract base screen
+├── screens/
+│   ├── recommendations.h / .cpp    ← BMCC Resources screen
+│   ├── toolkit.h / .cpp            ← Mental Health Toolkit screen
+│   └── journal.h / .cpp            ← Journal UI screen
+├── models/
+│   └── journalentry.h / .cpp       ← journal data model
+├── storage/
+│   └── journalstorage.h / .cpp     ← file I/O service for journal entries
+├── legacy/                         ← older mood-tracking experiments not built
 └── README.md
 ```
 
