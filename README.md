@@ -38,6 +38,40 @@ This project was created for **CSC211H Advanced Programming Techniques (Honors)*
 - **MindEase Assistant:** Calm student-support chat for stress, overwhelm, homesickness, loneliness, motivation, and help-seeking.
 - **My Journal:** Local journal with save, preview, and delete support.
 
+## Overall Project Flow
+
+```mermaid
+flowchart TD
+    A[Start MindEase Desktop App] --> B[MainWindow]
+    B --> C[Sidebar Navigation]
+    C --> D[BMCC Resources]
+    C --> E[Mental Health Toolkit]
+    C --> F[MindEase Assistant]
+    C --> G[My Journal]
+
+    D --> D1[Choose or search support topic]
+    D1 --> D2[View curated BMCC resources]
+    D2 --> D3[Open campus links or local PDF]
+
+    E --> E1[Choose wellness folder]
+    E1 --> E2[Read self-care tools and resources]
+    E2 --> E3[Open external links when needed]
+
+    F --> F1[Type student wellness message]
+    F1 --> F2[Qt sends request to local Express backend]
+    F2 --> F3[Moderation and backend risk checks]
+    F3 --> F4{Crisis or high risk?}
+    F4 -- Yes --> F5[Return crisis support response]
+    F4 -- No --> F6[OpenAI Responses API returns supportive reply]
+    F5 --> F7[Show response in chat]
+    F6 --> F7
+
+    G --> G1[Write private journal entry]
+    G1 --> G2[Save as local text file]
+    G --> G3[View past entries]
+    G3 --> G4[Preview or delete entry]
+```
+
 ## Assistant Safety Flow
 
 ```mermaid
