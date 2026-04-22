@@ -7,8 +7,10 @@
 #include <QScrollArea>
 #include <QPushButton>
 #include <QSizePolicy>
+#include <QGraphicsDropShadowEffect>
 #include <QDesktopServices>
 #include <QUrl>
+#include <QColor>
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Data structures
@@ -20,6 +22,8 @@ struct ToolItem {
     QString body;
     QString url;
     QString urlLabel;
+    QString url2 = {};
+    QString url2Label = {};
 };
 
 struct FolderDef {
@@ -39,7 +43,7 @@ struct FolderDef {
 
 static const QList<FolderDef> FOLDERS = {
 
-    {   "academic", "📚", "#edf7ee", "#2f7d5c",
+    {   "academic", "📚", "#dcfff1", "#8ee2a8",
         "Academic Stress",
         "Stay focused, manage deadlines, keep your cool during exams.",
         "School can be tough, but your well-being doesn't have to be! Get tips for staying "
@@ -54,7 +58,8 @@ static const QList<FolderDef> FOLDERS = {
               "Open Toolkit →" },
             { "🧩", "Procrastination Worksheet",
               "Identify what's holding you back and create actionable steps to move forward. "
-              "Pinpoint your procrastination triggers and build a plan that actually works for you.", "", "" },
+              "Pinpoint your procrastination triggers and build a plan that actually works for you.",
+              "https://freetodolist.com/", "Open Worksheet →" },
             { "☕", "Smart Study Break Ideas",
               "• 5-min refresh: stretch or take a short walk\n"
               "• Creative break: doodle or free-write in a journal\n"
@@ -73,7 +78,7 @@ static const QList<FolderDef> FOLDERS = {
         }
     },
 
-    {   "connection", "🤝", "#e2f4e8", "#348e63",
+    {   "connection", "🤝", "#e7fbff", "#8bdff2",
         "Connection & Community",
         "Groups, clubs, peer support, and NYC mental health resources.",
         "You don't have to face college alone. Whether you're looking for a supportive group, "
@@ -109,7 +114,7 @@ static const QList<FolderDef> FOLDERS = {
         }
     },
 
-    {   "identity", "🌈", "#eef8f1", "#3d8b64",
+    {   "identity", "🌈", "#fbf4d0", "#f1e8ad",
         "Empowered Identity & Care",
         "Racial trauma, LGBTQIA+, and disability justice resources.",
         "Your identity is your strength. This section offers affirming resources for students "
@@ -118,7 +123,9 @@ static const QList<FolderDef> FOLDERS = {
         {
             { "✊", "Racial Trauma Resources",
               "Validates experiences of racial trauma, inter-generational trauma, and repeated "
-              "racism. Resources to learn and heal at your own pace — because healing is not linear.", "", "" },
+              "racism. Resources to learn and heal at your own pace — because healing is not linear.",
+              "https://www.bmcc.cuny.edu/about-bmcc/race-equity-and-inclusion/resources/racial-trauma-resources/",
+              "Open BMCC Resources →" },
             { "📖", "Anti-Racist Resources",
               "Articles, TED Talks, and infographics to help you become a more effective ally "
               "and deepen your understanding of anti-racism and systemic inequity.", "", "" },
@@ -138,7 +145,7 @@ static const QList<FolderDef> FOLDERS = {
         }
     },
 
-    {   "gratitude", "✏️", "#f3faef", "#6f9b4f",
+    {   "gratitude", "✏️", "#fbf4d0", "#f1e8ad",
         "Gratitude & Journaling",
         "Prompts, 7-day challenges, and science-backed practices.",
         "Gratitude and journaling are powerful, research-backed tools for shifting your mindset "
@@ -166,7 +173,7 @@ static const QList<FolderDef> FOLDERS = {
         }
     },
 
-    {   "mindfulness", "🧘", "#e8f7ef", "#2f7d5c",
+    {   "mindfulness", "🧘", "#dcfff1", "#8ee2a8",
         "Mindfulness & Meditation",
         "Guided meditations, breathing exercises, and lovingkindness.",
         "Mindfulness is simply paying attention — on purpose, in the present moment, without "
@@ -198,7 +205,7 @@ static const QList<FolderDef> FOLDERS = {
         }
     },
 
-    {   "music", "🎵", "#f1f8e8", "#557161",
+    {   "music", "🎵", "#dff6ff", "#8bdff2",
         "Music for Your Mind",
         "Curated playlists for studying, relaxing, and deep focus.",
         "Music is one of the fastest ways to shift your mood and mental state. Whether you need "
@@ -215,15 +222,13 @@ static const QList<FolderDef> FOLDERS = {
               "Calm instrumental playlist for relaxation and stress relief. Works for studying too.",
               "https://open.spotify.com/playlist/37i9dQZF1DX3rxVfibe1L0",
               "Open Spotify →" },
-            { "🍎", "Apple Music Playlists",
-              "Apple Music Chill — curated for unwinding after a long day.\n"
-              "Apple Music Studying — engineered for sustained focus and productivity.", "", "" },
-            { "🎶", "Amazon Music",
-              "Calming Music and Study Beats playlists available through Amazon Music on any device.", "", "" },
+            { "🌿", "Lofi Station",
+              "A clean, simple lofi music station for studying, relaxing, and staying focused.",
+              "https://www.lofi.cafe/", "Open Lofi Station →" },
         }
     },
 
-    {   "nutrition", "🥗", "#e2f4e8", "#2f7d5c",
+    {   "nutrition", "🥗", "#e9fff3", "#8ee2a8",
         "Nutrition & Energy",
         "Fuel your brain, campus fitness, and on-campus food resources.",
         "What you eat and how you move directly affects your mood, focus, and energy levels. "
@@ -242,8 +247,13 @@ static const QList<FolderDef> FOLDERS = {
               "https://www.bmcc.cuny.edu/student-affairs/arc/panther-pantry/", "Visit →" },
             { "🏋️", "Campus Fitness",
               "On campus: Fitness Center, Swimming Pool, and Health & Wellness Services — "
-              "accessible exercise options for every student.",
-              "https://www.bmcc.cuny.edu/student-affairs/health-services/", "Visit →" },
+              "accessible exercise options for every student.\n\n"
+              "CONTACT: BMCC Athletics\n"
+              "📞 (212) 220-8260",
+              "https://bmccathletics.com/sports/2012/4/2/RecreationSchedule.aspx",
+              "Schedule →",
+              "https://www.bmcc.cuny.edu/students/fitness-center/",
+              "Visit →" },
             { "🌳", "NYC Free Outdoor Fitness",
               "Free outdoor fitness classes in NYC parks, adaptive programs for students with "
               "disabilities, and fitness meetup groups across the city.",
@@ -252,7 +262,7 @@ static const QList<FolderDef> FOLDERS = {
         }
     },
 
-    {   "sleep", "🌙", "#eef7f1", "#3b7c5a",
+    {   "sleep", "🌙", "#e7fbff", "#8bdff2",
         "Sleep & Relaxation",
         "Sleep calculators, proven tips, and how to stop doom-scrolling.",
         "Sleep is one of the most powerful tools for mental and physical health — and one of "
@@ -287,15 +297,26 @@ static const QList<FolderDef> FOLDERS = {
 };
 
 static QLabel* makeToolkitChip(const QString &text,
-                               const QString &bg = "#ffffff",
-                               const QString &fg = "#5d574f",
-                               const QString &border = "#ece9e2") {
+                               const QString &bg = "#082f49",
+                               const QString &fg = "#f1e8ad",
+                               const QString &border = "#8bdff2") {
     QLabel *chip = new QLabel(text);
     chip->setStyleSheet(
         QString("font-size:11px; font-weight:600; color:%1; background:%2; "
                 "border:1px solid %3; border-radius:12px; padding:5px 10px;")
             .arg(fg, bg, border));
     return chip;
+}
+
+static void applyToolkitShadow(QWidget *widget,
+                               int blur = 24,
+                               int yOffset = 6,
+                               const QColor &color = QColor(142, 226, 168, 28)) {
+    auto *shadow = new QGraphicsDropShadowEffect(widget);
+    shadow->setBlurRadius(blur);
+    shadow->setOffset(0, yOffset);
+    shadow->setColor(color);
+    widget->setGraphicsEffect(shadow);
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -311,10 +332,10 @@ static QWidget* makeToolItem(const ToolItem &item) {
 
     // Icon badge
     QLabel *iconLbl = new QLabel(item.icon);
-    iconLbl->setFixedSize(36, 36);
+    iconLbl->setFixedSize(40, 40);
     iconLbl->setAlignment(Qt::AlignCenter);
     iconLbl->setStyleSheet(
-        "font-size:18px; background:#faf9f5; border-radius:9px; border:none;");
+        "font-size:19px; background:#e7fbff; border:1px solid #8bdff2; border-radius:12px;");
 
     // Text block
     QWidget *textBlock = new QWidget();
@@ -325,7 +346,7 @@ static QWidget* makeToolItem(const ToolItem &item) {
 
     QLabel *titleLbl = new QLabel(item.title);
     titleLbl->setStyleSheet(
-        "font-size:13px; font-weight:700; color:#1a1a1a; border:none; "
+        "font-size:14px; font-weight:800; color:#173c2c; border:none; "
         "letter-spacing:-0.1px;");
     vl->addWidget(titleLbl);
 
@@ -333,25 +354,42 @@ static QWidget* makeToolItem(const ToolItem &item) {
         QLabel *bodyLbl = new QLabel(item.body);
         bodyLbl->setWordWrap(true);
         bodyLbl->setStyleSheet(
-            "font-size:12px; color:#5d574f; border:none; line-height:165%;");
+            "font-size:13px; color:#4f6255; border:none; line-height:168%;");
         vl->addWidget(bodyLbl);
     }
 
-    if (!item.url.isEmpty()) {
-        QPushButton *linkBtn = new QPushButton(
-            item.urlLabel.isEmpty() ? "Visit →" : item.urlLabel);
-        const QString u = item.url;
-        QObject::connect(linkBtn, &QPushButton::clicked, [u]() {
-            QDesktopServices::openUrl(QUrl(u));
-        });
-        linkBtn->setStyleSheet(
-            "QPushButton { font-size:11px; font-weight:700; color:#2f7d5c; "
-            "  background:#edf7ee; border:none; border-radius:10px; "
-            "  padding:6px 14px; margin-top:3px; }"
-            "QPushButton:hover { background:#dcefe0; color:#245f47; }");
-        linkBtn->setCursor(Qt::PointingHandCursor);
-        linkBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
-        vl->addWidget(linkBtn);
+    if (!item.url.isEmpty() || !item.url2.isEmpty()) {
+        QWidget *buttonRow = new QWidget();
+        buttonRow->setStyleSheet("background:transparent; border:none;");
+        QHBoxLayout *buttonLayout = new QHBoxLayout(buttonRow);
+        buttonLayout->setContentsMargins(0, 2, 0, 0);
+        buttonLayout->setSpacing(8);
+
+        auto addLinkButton = [&](const QString &url, const QString &label) {
+            if (url.isEmpty())
+                return;
+
+            QPushButton *linkBtn = new QPushButton(label.isEmpty() ? "Visit →" : label);
+            const QString u = url;
+            QObject::connect(linkBtn, &QPushButton::clicked, [u]() {
+                QDesktopServices::openUrl(QUrl(u));
+            });
+            linkBtn->setStyleSheet(
+                "QPushButton { font-size:12px; font-weight:800; color:#06172a; "
+                "  background:qlineargradient(x1:0, y1:0, x2:1, y2:1,"
+                "                              stop:0 #8ee2a8, stop:0.55 #8bdff2, stop:1 #f1e8ad);"
+                "  border:1px solid #b8ffda; border-radius:11px; "
+                "  padding:6px 14px; margin-top:3px; }"
+                "QPushButton:hover { background:#8bdff2; color:#06172a; border-color:#f1e8ad; }");
+            linkBtn->setCursor(Qt::PointingHandCursor);
+            linkBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
+            buttonLayout->addWidget(linkBtn);
+        };
+
+        addLinkButton(item.url, item.urlLabel);
+        addLinkButton(item.url2, item.url2Label);
+        buttonLayout->addStretch();
+        vl->addWidget(buttonRow);
     }
 
     hl->addWidget(iconLbl, 0, Qt::AlignTop);
@@ -362,7 +400,7 @@ static QWidget* makeToolItem(const ToolItem &item) {
 static QFrame* makeDivider() {
     QFrame *f = new QFrame();
     f->setFrameShape(QFrame::HLine);
-    f->setStyleSheet("background:#f2efe7; border:none;");
+    f->setStyleSheet("background:#dfece1; border:none;");
     f->setFixedHeight(1);
     return f;
 }
@@ -386,8 +424,8 @@ void Toolkit::onActivated() {
 
 Toolkit::Toolkit(QWidget *parent) : Screen("Mental Health Toolkit", parent) {
     QVBoxLayout *main = new QVBoxLayout(this);
-    main->setContentsMargins(48, 36, 48, 36);
-    main->setSpacing(20);
+    main->setContentsMargins(56, 42, 56, 42);
+    main->setSpacing(22);
 
     // Shared header (title label + divider) via the Screen base-class utility.
     buildHeader(main);
@@ -395,11 +433,13 @@ Toolkit::Toolkit(QWidget *parent) : Screen("Mental Health Toolkit", parent) {
     // Intro banner
     QFrame *banner = new QFrame();
     banner->setStyleSheet(
-        "QFrame { background:#eaf7ee; border:1px solid #cfe5d2; "
-        "         border-radius:24px; }");
+        "QFrame { background:qlineargradient(x1:0, y1:0, x2:1, y2:1,"
+        "                                  stop:0 #082f49, stop:0.58 #0f5a53, stop:1 #173f30);"
+        "         border:1px solid #8bdff2; border-radius:28px; }");
+    applyToolkitShadow(banner, 28, 8, QColor(142, 226, 168, 30));
     QHBoxLayout *bannerLay = new QHBoxLayout(banner);
-    bannerLay->setContentsMargins(28, 22, 28, 22);
-    bannerLay->setSpacing(20);
+    bannerLay->setContentsMargins(32, 26, 32, 26);
+    bannerLay->setSpacing(22);
     QLabel *bannerIcon = new QLabel("🌱");
     bannerIcon->setStyleSheet("font-size:30px; border:none; background:transparent;");
     QLabel *bannerText = new QLabel(
@@ -407,7 +447,7 @@ Toolkit::Toolkit(QWidget *parent) : Screen("Mental Health Toolkit", parent) {
         "Click any folder below to explore tools, tips, and resources curated for BMCC students.");
     bannerText->setWordWrap(true);
     bannerText->setStyleSheet(
-        "font-size:14px; color:#4f6255; border:none; background:transparent; "
+        "font-size:15px; color:#d7fff1; border:none; background:transparent; "
         "line-height:170%;");
     bannerLay->addWidget(bannerIcon, 0, Qt::AlignTop);
     bannerLay->addWidget(bannerText, 1);
@@ -418,9 +458,9 @@ Toolkit::Toolkit(QWidget *parent) : Screen("Mental Health Toolkit", parent) {
     QHBoxLayout *metaLay = new QHBoxLayout(metaRow);
     metaLay->setContentsMargins(0, 0, 0, 0);
     metaLay->setSpacing(8);
-    metaLay->addWidget(makeToolkitChip("8 self-care folders", "#ffffff", "#2f7d5c", "#b9d9c2"));
-    metaLay->addWidget(makeToolkitChip("Official BMCC-based content", "#ffffff", "#245f47", "#cfe5d2"));
-    metaLay->addWidget(makeToolkitChip("External links open in browser", "#ffffff", "#557161", "#dfece1"));
+    metaLay->addWidget(makeToolkitChip("8 self-care folders", "#0b2a3c", "#f1e8ad", "#8bdff2"));
+    metaLay->addWidget(makeToolkitChip("Official BMCC-based content", "#0b2a3c", "#bdeee5", "#8ee2a8"));
+    metaLay->addWidget(makeToolkitChip("External links open in browser", "#0b2a3c", "#d7fff1", "#8bdff2"));
     metaLay->addStretch();
     main->addWidget(metaRow);
 
@@ -439,30 +479,34 @@ Toolkit::Toolkit(QWidget *parent) : Screen("Mental Health Toolkit", parent) {
     QWidget *inner = new QWidget();
     inner->setObjectName("screenSurface");
     QVBoxLayout *il = new QVBoxLayout(inner);
-    il->setContentsMargins(0, 0, 6, 0);
-    il->setSpacing(8);
+    il->setContentsMargins(2, 2, 10, 8);
+    il->setSpacing(10);
 
     for (const FolderDef &fd : FOLDERS) {
 
         // ── Folder card button ────────────────────────────────────────────
         QPushButton *card = new QPushButton();
-        card->setMinimumHeight(96);
+        card->setMinimumHeight(112);
         card->setCursor(Qt::PointingHandCursor);
         card->setStyleSheet(
             "QPushButton {"
-            "  border: 1px solid #dfece1;"
-            "  border-radius: 22px;"
-            "  background: #ffffff;"
+            "  border: 1px solid #8bdff2;"
+            "  border-radius: 24px;"
+            "  background: qradialgradient(cx:0.18, cy:0.12, radius:1.15,"
+            "                              fx:0.18, fy:0.12,"
+            "                              stop:0 #dff8ff, stop:0.38 #ffffff,"
+            "                              stop:0.72 #f8ffff, stop:1 #e7fbff);"
             "  text-align: left;"
             "}"
             "QPushButton:hover {"
-            "  border: 1px solid #b9d9c2;"
-            "  background: #f7fff8;"
+            "  border: 1px solid #f1e8ad;"
+            "  background: #f1fffb;"
             "}");
+        applyToolkitShadow(card, 22, 6, QColor(139, 223, 242, 22));
 
         QHBoxLayout *cardLay = new QHBoxLayout(card);
-        cardLay->setContentsMargins(24, 12, 24, 12);
-        cardLay->setSpacing(18);
+        cardLay->setContentsMargins(26, 14, 26, 14);
+        cardLay->setSpacing(20);
 
         // Icon badge
         QLabel *iconBadge = new QLabel(fd.icon);
@@ -482,11 +526,11 @@ Toolkit::Toolkit(QWidget *parent) : Screen("Mental Health Toolkit", parent) {
         cardTextLay->setSpacing(3);
         QLabel *nameLbl = new QLabel(fd.name);
         nameLbl->setStyleSheet(
-            "font-size:16px; font-weight:700; color:#173c2c; border:none; "
+            "font-size:18px; font-weight:800; color:#173c2c; border:none; "
             "letter-spacing:-0.15px;");
         QLabel *tagLbl = new QLabel(fd.tagline);
         tagLbl->setWordWrap(true);
-        tagLbl->setStyleSheet("font-size:12px; color:#6d8272; border:none;");
+        tagLbl->setStyleSheet("font-size:13px; color:#6d8272; border:none;");
         cardTextLay->addWidget(nameLbl);
         cardTextLay->addWidget(tagLbl);
 
@@ -494,7 +538,7 @@ Toolkit::Toolkit(QWidget *parent) : Screen("Mental Health Toolkit", parent) {
         QLabel *chev = new QLabel("›");
         chev->setFixedWidth(20);
         chev->setAlignment(Qt::AlignCenter);
-        chev->setStyleSheet("font-size:24px; color:#9fbfa9; border:none;");
+        chev->setStyleSheet("font-size:28px; color:#8bdff2; border:none;");
         chev->setAttribute(Qt::WA_TransparentForMouseEvents);
 
         cardLay->addWidget(iconBadge);
@@ -507,26 +551,29 @@ Toolkit::Toolkit(QWidget *parent) : Screen("Mental Health Toolkit", parent) {
             QString("QFrame {"
                     "  border: 1px solid %1;"
                     "  border-top: none;"
-                    "  border-radius: 0 0 22px 22px;"
-                    "  background: #ffffff;"
+                    "  border-radius: 0 0 24px 24px;"
+                    "  background: qradialgradient(cx:0.18, cy:0.12, radius:1.15,"
+                    "                              fx:0.18, fy:0.12,"
+                    "                              stop:0 #dff8ff, stop:0.38 #ffffff,"
+                    "                              stop:0.72 #f8ffff, stop:1 #e7fbff);"
                     "}").arg(fd.accentBorder));
         panel->setVisible(false);
 
         QVBoxLayout *panelLay = new QVBoxLayout(panel);
-        panelLay->setContentsMargins(20, 18, 20, 20);
+        panelLay->setContentsMargins(24, 20, 24, 24);
         panelLay->setSpacing(0);
 
         // Intro box
         QFrame *introBox = new QFrame();
         introBox->setStyleSheet(
-            QString("QFrame { background:%1; border-radius:10px; border:none; }")
+            QString("QFrame { background:%1; border-radius:14px; border:1px solid #dfece1; }")
                 .arg(fd.accent));
         QVBoxLayout *introLay = new QVBoxLayout(introBox);
-        introLay->setContentsMargins(14, 12, 14, 12);
+        introLay->setContentsMargins(16, 14, 16, 14);
         QLabel *introLbl = new QLabel(fd.intro);
         introLbl->setWordWrap(true);
         introLbl->setStyleSheet(
-            "font-size:12px; color:#3d3a35; border:none; background:transparent; "
+            "font-size:13px; color:#0b2a3c; border:none; background:transparent; "
             "line-height:170%;");
         introLay->addWidget(introLbl);
         panelLay->addWidget(introBox);
@@ -573,14 +620,17 @@ void Toolkit::toggleFolder(const QString &id) {
         if (auto *btn = qobject_cast<QPushButton*>(it.value()))
             btn->setStyleSheet(
                 "QPushButton {"
-                "  border: 1px solid #dfece1;"
-                "  border-radius: 22px;"
-                "  background: #ffffff;"
+                "  border: 1px solid #8bdff2;"
+                "  border-radius: 24px;"
+                "  background: qradialgradient(cx:0.18, cy:0.12, radius:1.15,"
+                "                              fx:0.18, fy:0.12,"
+                "                              stop:0 #dff8ff, stop:0.38 #ffffff,"
+                "                              stop:0.72 #f8ffff, stop:1 #e7fbff);"
                 "  text-align: left;"
                 "}"
                 "QPushButton:hover {"
-                "  border: 1px solid #b9d9c2;"
-                "  background: #f7fff8;"
+                "  border: 1px solid #f1e8ad;"
+                "  background: #f1fffb;"
                 "}");
     }
 
@@ -596,8 +646,8 @@ void Toolkit::toggleFolder(const QString &id) {
     openFolder = id;
 
     // Find this folder's accent colors
-    QString accent       = "#edf7ee";
-    QString accentBorder = "#2f7d5c";
+    QString accent       = "#e7fbff";
+    QString accentBorder = "#8bdff2";
     for (const FolderDef &fd : FOLDERS) {
         if (fd.id == id) { accent = fd.accent; accentBorder = fd.accentBorder; break; }
     }
@@ -607,8 +657,9 @@ void Toolkit::toggleFolder(const QString &id) {
             QString("QPushButton {"
                     "  border: 1px solid %1;"
                     "  border-bottom: none;"
-                    "  border-radius: 22px 22px 0 0;"
-                    "  background: %2;"
+                    "  border-radius: 24px 24px 0 0;"
+                    "  background: qlineargradient(x1:0, y1:0, x2:1, y2:1,"
+                    "                              stop:0 %2, stop:1 #e7fbff);"
                     "  text-align: left;"
                     "}").arg(accentBorder, accent));
 

@@ -18,7 +18,7 @@
 //   • Polymorphism  — overrides screenId() and onActivated() from Screen
 //   • Composition   — owns a JournalStorage service for file I/O
 //
-// Entries are saved to ~/Documents/MindEase_Journal/yyyy-MM-dd_HH-mm-ss.txt
+// Entries are saved to ~/Documents/MindEase_Journal/yyyy-MM-dd_HH-mm-ss-zzz.txt
 // All disk reads and writes are delegated to JournalStorage, keeping this class
 // focused on UI state and user interaction.
 // ─────────────────────────────────────────────────────────────────────────────

@@ -1,0 +1,8 @@
+.DS_Store
+.env
+build/
+node_modules/
+backend/.env
+backend/node_modules/
+backend/npm-debug.log*
+backend/.DS_Store

@@ -15,17 +15,33 @@
 #include <QSplitter>
 #include <QStandardPaths>
 #include <QSizePolicy>
+#include <QGraphicsDropShadowEffect>
+#include <QColor>
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Helpers
 // ─────────────────────────────────────────────────────────────────────────────
+
+static void applyJournalShadow(QWidget *widget,
+                               int blur = 24,
+                               int yOffset = 6,
+                               const QColor &color = QColor(241, 232, 173, 24)) {
+    auto *shadow = new QGraphicsDropShadowEffect(widget);
+    shadow->setBlurRadius(blur);
+    shadow->setOffset(0, yOffset);
+    shadow->setColor(color);
+    widget->setGraphicsEffect(shadow);
+}
 
 void Journal::showStatus(const QString &msg, bool ok) {
     m_statusLbl->setText(msg);
     m_statusLbl->setStyleSheet(
         ok ? "font-size:12px; color:#2E7D32; border:none; background:transparent;"
            : "font-size:12px; color:#C62828; border:none; background:transparent;");
-    QTimer::singleShot(4000, m_statusLbl, [this]() { m_statusLbl->setText(""); });
+    QTimer::singleShot(4000, m_statusLbl, [this, msg]() {
+        if (m_statusLbl->text() == msg)
+            m_statusLbl->setText("");
+    });
 }
 
 void Journal::syncEntryActions() {
@@ -131,7 +147,7 @@ void Journal::refreshEntryList() {
 
     if (entries.isEmpty()) {
         m_preview->setPlaceholderText(
-            "No entries yet.\nWrite a reflection and save it to start building your archive.");
+            "No entries yet.");
         syncEntryActions();
         return;
     }
@@ -145,7 +161,7 @@ void Journal::refreshEntryList() {
     }
 
     if (m_entryList->count() == 0) {
-        m_preview->setPlaceholderText("No entries yet.\nSave your first entry to see it here.");
+        m_preview->setPlaceholderText("No entries yet.");
         syncEntryActions();
         return;
     }
@@ -210,8 +226,8 @@ Journal::Journal(QWidget *parent)
                 + "/MindEase_Journal") {
 
     QVBoxLayout *root = new QVBoxLayout(this);
-    root->setContentsMargins(48, 36, 48, 36);
-    root->setSpacing(20);
+    root->setContentsMargins(56, 42, 56, 42);
+    root->setSpacing(22);
 
     // Shared header (title label + divider) from the Screen base-class helper.
     // Demonstrates buildHeader() inherited from Screen.
@@ -233,10 +249,15 @@ Journal::Journal(QWidget *parent)
     // ════════════════════════════════════════════
     QFrame *writePanel = new QFrame();
     writePanel->setStyleSheet(
-        "QFrame { border:1px solid #dfece1; border-radius:24px; background:#fff; }");
+        "QFrame { border:1px solid #8bdff2; border-radius:28px;"
+        "         background:qradialgradient(cx:0.18, cy:0.12, radius:1.15,"
+        "                                     fx:0.18, fy:0.12,"
+        "                                     stop:0 #dff8ff, stop:0.38 #ffffff,"
+        "                                     stop:0.72 #f8ffff, stop:1 #e7fbff); }");
+    applyJournalShadow(writePanel, 24, 6, QColor(241, 232, 173, 22));
     QVBoxLayout *wl = new QVBoxLayout(writePanel);
-    wl->setContentsMargins(28, 26, 28, 26);
-    wl->setSpacing(14);
+    wl->setContentsMargins(32, 30, 32, 30);
+    wl->setSpacing(15);
 
     // Date + time header row
     QWidget *dateRow = new QWidget();
@@ -247,7 +268,7 @@ Journal::Journal(QWidget *parent)
 
     m_dateLbl = new QLabel();
     m_dateLbl->setStyleSheet(
-        "font-size:18px; font-weight:700; color:#173c2c; border:none; "
+        "font-size:20px; font-weight:800; color:#173c2c; border:none; "
         "letter-spacing:-0.15px;");
 
     m_timeLbl = new QLabel();
@@ -265,8 +286,8 @@ Journal::Journal(QWidget *parent)
     prl->setSpacing(8);
     QLabel *privacyChip = new QLabel("PRIVATE · STORED LOCALLY");
     privacyChip->setStyleSheet(
-        "font-size:10px; font-weight:700; color:#2f7d5c; background:#edf7ee; "
-        "border:1px solid #cfe5d2; border-radius:12px; padding:6px 10px; "
+        "font-size:10px; font-weight:800; color:#06172a; background:#f1e8ad; "
+        "border:1px solid #8bdff2; border-radius:12px; padding:6px 10px; "
         "letter-spacing:1.1px;");
     QLabel *privacyNote = new QLabel("Entries are saved as plain text in your Documents folder.");
     privacyNote->setStyleSheet(
@@ -279,15 +300,16 @@ Journal::Journal(QWidget *parent)
     // the Resources screen's left-accented card style)
     QFrame *promptBox = new QFrame();
     promptBox->setStyleSheet(
-        "QFrame { background:#edf7ee; border:1px solid #cfe5d2; "
-        "         border-left:4px solid #2f7d5c; border-radius:18px; }");
+        "QFrame { background:qlineargradient(x1:0, y1:0, x2:1, y2:1,"
+        "                                  stop:0 #fbf4d0, stop:0.48 #dcfff1, stop:1 #e7fbff);"
+        "         border:1px solid #8bdff2; border-left:5px solid #8ee2a8; border-radius:20px; }");
     QVBoxLayout *pl = new QVBoxLayout(promptBox);
     pl->setContentsMargins(16, 12, 16, 14);
     pl->setSpacing(6);
 
     QLabel *promptTitle = new QLabel("✏️  JOURNAL PROMPTS");
     promptTitle->setStyleSheet(
-        "font-size:10px; font-weight:700; color:#2f7d5c; border:none; "
+        "font-size:10px; font-weight:800; color:#073b4c; border:none; "
         "background:transparent; letter-spacing:1.4px;");
     pl->addWidget(promptTitle);
     pl->addSpacing(2);
@@ -302,7 +324,7 @@ Journal::Journal(QWidget *parent)
         QLabel *lbl = new QLabel(p);
         lbl->setWordWrap(true);
         lbl->setStyleSheet(
-            "font-size:12px; color:#4f6255; border:none; background:transparent; "
+            "font-size:13px; color:#4f6255; border:none; background:transparent; "
             "line-height:165%;");
         pl->addWidget(lbl);
     }
@@ -323,18 +345,24 @@ Journal::Journal(QWidget *parent)
         "whatever is on your mind right now.");
     m_editor->setStyleSheet(
         "QTextEdit {"
-        "  border: 1px solid #cfe5d2;"
-        "  border-radius: 18px;"
-        "  background: #fafffb;"
-        "  font-size: 15px;"
+        "  border: 1px solid #8bdff2;"
+        "  border-radius: 22px;"
+        "  background: qradialgradient(cx:0.18, cy:0.12, radius:1.15,"
+        "                              fx:0.18, fy:0.12,"
+        "                              stop:0 #eafaff, stop:0.45 #ffffff,"
+        "                              stop:1 #f6ffff);"
+        "  font-size: 16px;"
         "  color: #173c2c;"
-        "  padding: 18px;"
+        "  padding: 20px;"
         "  line-height: 170%;"
-        "  selection-background-color: #cfe5d2;"
+        "  selection-background-color: #f1e8ad;"
         "}"
         "QTextEdit:focus {"
-        "  border: 1px solid #2f7d5c;"
-        "  background: #ffffff;"
+        "  border: 1px solid #f1e8ad;"
+        "  background: qradialgradient(cx:0.18, cy:0.12, radius:1.15,"
+        "                              fx:0.18, fy:0.12,"
+        "                              stop:0 #eafaff, stop:0.45 #ffffff,"
+        "                              stop:1 #f6ffff);"
         "}");
     m_editor->setTabStopDistance(28);
     m_editor->setMinimumHeight(220);
@@ -374,10 +402,15 @@ Journal::Journal(QWidget *parent)
     // ════════════════════════════════════════════
     QFrame *readPanel = new QFrame();
     readPanel->setStyleSheet(
-        "QFrame { border:1px solid #dfece1; border-radius:24px; background:#fff; }");
+        "QFrame { border:1px solid #8bdff2; border-radius:28px;"
+        "         background:qradialgradient(cx:0.18, cy:0.12, radius:1.15,"
+        "                                     fx:0.18, fy:0.12,"
+        "                                     stop:0 #dff8ff, stop:0.38 #ffffff,"
+        "                                     stop:0.72 #f8ffff, stop:1 #e7fbff); }");
+    applyJournalShadow(readPanel, 24, 6, QColor(139, 223, 242, 24));
     readPanel->setMinimumWidth(390);
     QVBoxLayout *rl = new QVBoxLayout(readPanel);
-    rl->setContentsMargins(26, 24, 26, 24);
+    rl->setContentsMargins(30, 28, 30, 28);
     rl->setSpacing(14);
 
     QWidget *readHeader = new QWidget();
@@ -388,12 +421,12 @@ Journal::Journal(QWidget *parent)
 
     QLabel *readTitle = new QLabel("📚  Past Entries");
     readTitle->setStyleSheet(
-        "font-size:17px; font-weight:700; color:#173c2c; border:none; "
+        "font-size:18px; font-weight:800; color:#173c2c; border:none; "
         "letter-spacing:-0.15px;");
     QLabel *readMeta = new QLabel("Newest first");
     readMeta->setStyleSheet(
-        "font-size:11px; font-weight:600; color:#557161; background:#edf7ee; "
-        "border:1px solid #cfe5d2; border-radius:12px; padding:5px 10px;");
+        "font-size:11px; font-weight:800; color:#06172a; background:#f1e8ad; "
+        "border:1px solid #8bdff2; border-radius:12px; padding:5px 10px;");
     rhl->addWidget(readTitle);
     rhl->addStretch();
     rhl->addWidget(readMeta);
@@ -402,9 +435,12 @@ Journal::Journal(QWidget *parent)
     m_entryList = new QListWidget();
     m_entryList->setStyleSheet(
         "QListWidget {"
-        "  border:1px solid #dfece1;"
-        "  border-radius:18px;"
-        "  background:#fafffb;"
+        "  border:1px solid #8bdff2;"
+        "  border-radius:20px;"
+        "  background:qradialgradient(cx:0.18, cy:0.12, radius:1.15,"
+        "                             fx:0.18, fy:0.12,"
+        "                             stop:0 #eafaff, stop:0.45 #ffffff,"
+        "                             stop:1 #f6ffff);"
         "  font-size:14px;"
         "  color:#173c2c;"
         "  outline:none;"
@@ -419,13 +455,13 @@ Journal::Journal(QWidget *parent)
         "  border-bottom:none;"
         "}"
         "QListWidget::item:selected {"
-        "  background:#edf7ee;"
-        "  color:#2f7d5c;"
+        "  background:#e7fbff;"
+        "  color:#073b4c;"
         "  font-weight:600;"
         "  border-bottom-color:transparent;"
         "}"
         "QListWidget::item:hover {"
-        "  background:#f7fff8;"
+        "  background:#f4fffb;"
         "}");
     m_entryList->setMinimumHeight(170);
     m_entryList->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
@@ -493,10 +529,13 @@ Journal::Journal(QWidget *parent)
     m_preview->setPlaceholderText("Click an entry on the left to read it here.");
     m_preview->setStyleSheet(
         "QTextEdit {"
-        "  border:1px solid #dfece1;"
-        "  border-radius:18px;"
-        "  background:#fafffb;"
-        "  font-size:14px;"
+        "  border:1px solid #8bdff2;"
+        "  border-radius:20px;"
+        "  background:qradialgradient(cx:0.18, cy:0.12, radius:1.15,"
+        "                             fx:0.18, fy:0.12,"
+        "                             stop:0 #eafaff, stop:0.45 #ffffff,"
+        "                             stop:1 #f6ffff);"
+        "  font-size:15px;"
         "  color:#4f6255;"
         "  padding:16px;"
         "  line-height:170%;"

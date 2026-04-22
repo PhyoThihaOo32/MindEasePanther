@@ -1,0 +1,6 @@
+*.o
+main
+mindease_console_demo
+console_journal_entries/
+journal_index.txt
+journal_entry_*.txt

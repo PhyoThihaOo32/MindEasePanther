@@ -37,7 +37,18 @@ bool JournalStorage::deleteEntry(const QString &path) const {
     if (path.trimmed().isEmpty())
         return false;
 
-    QFile file(path);
+    const QDir storageDir(resolveDirectoryPath());
+    const QString storageRoot = storageDir.absolutePath() + QDir::separator();
+    const QFileInfo targetInfo(path);
+
+    // Only remove plain-text journal files that live inside the configured
+    // MindEase journal directory. This keeps UI deletion from becoming a
+    // generic file remover if a bad path ever reaches the list widget.
+    if (!targetInfo.absoluteFilePath().startsWith(storageRoot)
+        || targetInfo.suffix().compare("txt", Qt::CaseInsensitive) != 0)
+        return false;
+
+    QFile file(targetInfo.absoluteFilePath());
     if (!file.exists())
         return false;
 
@@ -80,8 +91,18 @@ QString JournalStorage::resolveDirectoryPath() const {
 }
 
 QString JournalStorage::buildEntryPath(const QDateTime &dateTime) const {
-    return resolveDirectoryPath() + "/"
-           + dateTime.toString("yyyy-MM-dd_HH-mm-ss") + ".txt";
+    const QString basePath = resolveDirectoryPath() + "/"
+        + dateTime.toString("yyyy-MM-dd_HH-mm-ss-zzz");
+
+    QString candidate = basePath + ".txt";
+    int suffix = 1;
+    while (QFileInfo::exists(candidate)) {
+        candidate = QString("%1_%2.txt")
+            .arg(basePath)
+            .arg(suffix++, 2, 10, QChar('0'));
+    }
+
+    return candidate;
 }
 
 QString JournalStorage::formatEntry(const JournalEntry &entry) const {
@@ -99,10 +120,16 @@ JournalEntry JournalStorage::parseEntryFile(const QString &path,
                                             const QString &content) const {
     const QFileInfo fileInfo(path);
     const QString stem     = fileInfo.completeBaseName();
-    const QString datePart = stem.left(10);
-    const QString timePart = stem.mid(11).replace('-', ':');
-    const QDateTime dateTime = QDateTime::fromString(
-        datePart + " " + timePart, "yyyy-MM-dd HH:mm:ss");
+    const int modernStampLength = QString("yyyy-MM-dd_HH-mm-ss-zzz").length();
+    QDateTime dateTime = QDateTime::fromString(
+        stem.left(modernStampLength), "yyyy-MM-dd_HH-mm-ss-zzz");
+
+    if (!dateTime.isValid()) {
+        const QString datePart = stem.left(10);
+        const QString timePart = stem.mid(11, 8).replace('-', ':');
+        dateTime = QDateTime::fromString(
+            datePart + " " + timePart, "yyyy-MM-dd HH:mm:ss");
+    }
 
     const QString separator = QString(30, QChar(0x2500));
     const int separatorIndex = content.indexOf(separator);

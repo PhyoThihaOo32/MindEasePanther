@@ -2,6 +2,7 @@
 #include "core/screen.h"
 #include "screens/recommendations.h"
 #include "screens/toolkit.h"
+#include "screens/assistantchat.h"
 #include "screens/journal.h"
 
 #include <QHBoxLayout>
@@ -14,8 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
 {
     setWindowTitle("MindEase — BMCC Wellness Companion");
-    setMinimumSize(1280, 820);
-    resize(1440, 900);
+    setMinimumSize(1120, 760);
+    resize(1500, 960);
     setWindowState(Qt::WindowMaximized);
 
     applyStyle();
@@ -31,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent)
     // Build screens (polymorphic — stored as Screen*)
     screens.append(new Recommendations(this));
     screens.append(new Toolkit(this));
+    screens.append(new AssistantChat(this));
     screens.append(new Journal(this));
 
     // Stack
@@ -53,7 +55,7 @@ MainWindow::~MainWindow() {}
 void MainWindow::buildSidebar() {
     sidebar = new QWidget(this);
     sidebar->setObjectName("sidebar");
-    sidebar->setFixedWidth(260);
+    sidebar->setFixedWidth(288);
 
     QVBoxLayout *sl = new QVBoxLayout(sidebar);
     sl->setContentsMargins(0, 0, 0, 0);
@@ -63,7 +65,7 @@ void MainWindow::buildSidebar() {
     QWidget *logo = new QWidget();
     logo->setObjectName("logoBox");
     QVBoxLayout *ll = new QVBoxLayout(logo);
-    ll->setContentsMargins(22, 22, 22, 20);
+    ll->setContentsMargins(26, 26, 26, 22);
     ll->setSpacing(2);
 
     QLabel *appName = new QLabel("MindEase");
@@ -77,7 +79,7 @@ void MainWindow::buildSidebar() {
     // Small section label above nav
     QLabel *navHeader = new QLabel("MENU");
     navHeader->setObjectName("navHeader");
-    navHeader->setContentsMargins(22, 14, 22, 8);
+    navHeader->setContentsMargins(26, 18, 26, 8);
     sl->addWidget(navHeader);
 
     // ── Nav items (index matches stack order) ────────────────────────────────
@@ -85,6 +87,7 @@ void MainWindow::buildSidebar() {
     const QList<NavDef> navDefs = {
         { "✦", "BMCC Resources"         },
         { "◆", "Mental Health Toolkit"  },
+        { "☼", "MindEase Assistant"      },
         { "✎", "My Journal"             },
     };
 
@@ -110,7 +113,7 @@ void MainWindow::buildSidebar() {
 
     QWidget *footer = new QWidget();
     QVBoxLayout *fl = new QVBoxLayout(footer);
-    fl->setContentsMargins(22, 14, 22, 18);
+    fl->setContentsMargins(26, 16, 26, 20);
     fl->setSpacing(2);
 
     QLabel *footerTitle = new QLabel("Honors Project");
@@ -139,150 +142,159 @@ void MainWindow::switchScreen(int index) {
 void MainWindow::applyStyle() {
     setStyleSheet(R"(
         QMainWindow {
-            background: #f6fbf4;
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                        stop:0 #06172a, stop:0.48 #073b4c, stop:1 #0b3f35);
         }
         #appShell {
-            background: #f6fbf4;
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                        stop:0 #06172a, stop:0.48 #073b4c, stop:1 #0b3f35);
         }
 
         /* ── Sidebar ──────────────────────────────────────────────────── */
         #sidebar {
-            background: #ffffff;
-            border-right: 1px solid #dfece1;
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                        stop:0 #071426, stop:0.48 #082f49, stop:1 #063b35);
+            border-right: 1px solid #8bdff2;
         }
         #logoBox {
-            background: #f1f8f1;
-            border-bottom: 1px solid #dfece1;
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                        stop:0 #082f49, stop:0.58 #0b4d54, stop:1 #123f2d);
+            border-bottom: 1px solid #8bdff2;
         }
         #appName {
-            font-size: 24px;
-            font-weight: 700;
-            color: #173c2c;
-            letter-spacing: -0.4px;
+            font-size: 28px;
+            font-weight: 800;
+            color: #f1e8ad;
+            letter-spacing: -0.65px;
         }
         #appSub {
-            font-size: 12px;
-            color: #6d8272;
+            font-size: 13px;
+            color: #bdeee5;
             margin-top: 3px;
-            letter-spacing: 0.2px;
+            letter-spacing: 0.3px;
         }
         #navHeader {
             font-size: 10px;
             font-weight: 700;
-            color: #8ba493;
+            color: #9ee6f2;
             letter-spacing: 1.4px;
         }
 
         /* ── Unified nav buttons ─────────────────────────────────────── */
         #navBtn {
             text-align: left;
-            padding: 15px 20px;
+            padding: 17px 22px;
             border: none;
-            border-left: 3px solid transparent;
+            border-left: 4px solid transparent;
             background: transparent;
-            font-size: 14px;
-            color: #4f6255;
-            border-radius: 0px 16px 16px 0px;
-            margin: 4px 14px 4px 0;
+            font-size: 15px;
+            color: #d7fff1;
+            border-radius: 0px 20px 20px 0px;
+            margin: 5px 18px 5px 0;
         }
         #navBtn:hover {
-            background: #edf7ee;
-            color: #173c2c;
+            background: #11384a;
+            color: #f1e8ad;
         }
         #navBtn:checked {
-            background: #f7fff8;
-            color: #2f7d5c;
-            border-left: 3px solid #2f7d5c;
-            font-weight: 700;
+            background: #123f46;
+            color: #f1e8ad;
+            border-left: 4px solid #8ee2a8;
+            font-weight: 800;
         }
         #navBtn:focus {
-            background: #edf7ee;
-            color: #245f47;
+            background: #11384a;
+            color: #bdeee5;
         }
 
         /* ── Sidebar footer ──────────────────────────────────────────── */
         #footerDiv {
-            color: #dfece1;
-            background: #dfece1;
+            color: #8bdff2;
+            background: #8bdff2;
             max-height: 1px;
             border: none;
         }
         #footerTitle {
             font-size: 11px;
             font-weight: 700;
-            color: #557161;
+            color: #f1e8ad;
             letter-spacing: 0.3px;
         }
-        #verLabel { font-size: 10px; color: #8ba493; letter-spacing: 0.2px; }
-        #footerNote { font-size: 10px; color: #6d8272; }
+        #verLabel { font-size: 10px; color: #bdeee5; letter-spacing: 0.2px; }
+        #footerNote { font-size: 10px; color: #c4f7ff; }
 
         #screenStack {
-            background: #f6fbf4;
+            background: transparent;
         }
         QWidget#screenRoot,
         QWidget#screenSurface,
         QWidget#screenViewport {
-            background: #f6fbf4;
+            background: transparent;
         }
 
         /* ── Shared screen typography ────────────────────────────────── */
         QLabel#screenTitle {
-            font-size: 28px;
-            font-weight: 700;
-            color: #173c2c;
-            letter-spacing: -0.35px;
+            font-size: 32px;
+            font-weight: 800;
+            color: #f1e8ad;
+            letter-spacing: -0.65px;
         }
         QLabel#sectionLabel {
             font-size: 10px;
             font-weight: 700;
-            color: #8ba493;
+            color: #9ee6f2;
             letter-spacing: 1.4px;
         }
 
         /* ── Generic buttons ─────────────────────────────────────────── */
         QPushButton#primaryBtn {
-            background: #2f7d5c;
-            color: #ffffff;
-            border: none;
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                        stop:0 #8ee2a8, stop:0.5 #8bdff2, stop:1 #f1e8ad);
+            color: #06172a;
+            border: 1px solid #b8ffda;
             border-radius: 14px;
             padding: 12px 26px;
             font-size: 14px;
-            font-weight: 700;
+            font-weight: 800;
         }
-        QPushButton#primaryBtn:hover { background: #286d50; }
-        QPushButton#primaryBtn:pressed { background: #20533f; }
+        QPushButton#primaryBtn:hover { background: #8bdff2; }
+        QPushButton#primaryBtn:pressed { background: #8ee2a8; }
+        QPushButton#primaryBtn:disabled {
+            background: #31535f;
+            color: #9eb8b9;
+        }
 
         QPushButton#outlineBtn {
-            background: transparent;
-            color: #2f7d5c;
-            border: 1px solid #b9d9c2;
+            background: #0b2a3c;
+            color: #f1e8ad;
+            border: 1px solid #8bdff2;
             border-radius: 14px;
             padding: 11px 20px;
             font-size: 14px;
             font-weight: 600;
         }
         QPushButton#outlineBtn:hover {
-            background: #edf7ee;
-            border-color: #8fc5a2;
-            color: #245f47;
+            background: #123f46;
+            border-color: #8ee2a8;
+            color: #bdeee5;
         }
 
         /* ── Scrollbars ──────────────────────────────────────────────── */
         QScrollArea {
             border: none;
-            background: #f6fbf4;
+            background: transparent;
         }
         QScrollBar:vertical {
-            width: 8px;
+            width: 10px;
             background: transparent;
-            margin: 4px 2px 4px 0;
+            margin: 6px 2px 6px 0;
         }
         QScrollBar::handle:vertical {
-            background: #b9d9c2;
-            border-radius: 4px;
+            background: #8bdff2;
+            border-radius: 5px;
             min-height: 30px;
         }
-        QScrollBar::handle:vertical:hover { background: #8fc5a2; }
+        QScrollBar::handle:vertical:hover { background: #f1e8ad; }
         QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
             height: 0;
             background: transparent;
