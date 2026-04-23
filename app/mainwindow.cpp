@@ -143,74 +143,80 @@ void MainWindow::applyStyle() {
     setStyleSheet(R"(
         QMainWindow {
             background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                        stop:0 #06172a, stop:0.48 #073b4c, stop:1 #0b3f35);
+                                        stop:0 #03111e, stop:0.32 #06364a, stop:0.7 #0b5c59, stop:1 #09382d);
         }
         #appShell {
             background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                        stop:0 #06172a, stop:0.48 #073b4c, stop:1 #0b3f35);
+                                        stop:0 #03111e, stop:0.32 #06364a, stop:0.7 #0b5c59, stop:1 #09382d);
         }
 
         /* ── Sidebar ──────────────────────────────────────────────────── */
         #sidebar {
             background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                        stop:0 #071426, stop:0.48 #082f49, stop:1 #063b35);
-            border-right: 1px solid #8bdff2;
+                                        stop:0 #061224, stop:0.42 #082b44, stop:1 #0a3a35);
+            border-right: 1px solid rgba(139, 223, 242, 0.48);
         }
         #logoBox {
             background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                        stop:0 #082f49, stop:0.58 #0b4d54, stop:1 #123f2d);
-            border-bottom: 1px solid #8bdff2;
+                                        stop:0 #0a3550, stop:0.52 #0c5a5c, stop:1 #184631);
+            border-bottom: 1px solid rgba(139, 223, 242, 0.56);
         }
         #appName {
-            font-size: 28px;
+            font-size: 30px;
             font-weight: 800;
-            color: #f1e8ad;
-            letter-spacing: -0.65px;
+            color: #fff1ad;
+            letter-spacing: -0.8px;
         }
         #appSub {
             font-size: 13px;
-            color: #bdeee5;
+            color: #d1fff5;
             margin-top: 3px;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.35px;
         }
         #navHeader {
             font-size: 10px;
             font-weight: 700;
-            color: #9ee6f2;
-            letter-spacing: 1.4px;
+            color: #95edf8;
+            letter-spacing: 1.8px;
         }
 
         /* ── Unified nav buttons ─────────────────────────────────────── */
         #navBtn {
             text-align: left;
-            padding: 17px 22px;
-            border: none;
+            padding: 18px 22px;
+            border: 1px solid transparent;
             border-left: 4px solid transparent;
-            background: transparent;
+            background: rgba(255, 255, 255, 0.03);
             font-size: 15px;
             color: #d7fff1;
-            border-radius: 0px 20px 20px 0px;
-            margin: 5px 18px 5px 0;
+            border-radius: 0px 22px 22px 0px;
+            margin: 6px 16px 6px 0;
         }
         #navBtn:hover {
-            background: #11384a;
-            color: #f1e8ad;
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                        stop:0 rgba(17, 56, 74, 0.92), stop:1 rgba(19, 74, 72, 0.9));
+            color: #fff1ad;
+            border: 1px solid rgba(139, 223, 242, 0.22);
         }
         #navBtn:checked {
-            background: #123f46;
-            color: #f1e8ad;
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                        stop:0 rgba(19, 63, 70, 0.98), stop:1 rgba(22, 90, 90, 0.96));
+            color: #fff1ad;
             border-left: 4px solid #8ee2a8;
+            border-top: 1px solid rgba(139, 223, 242, 0.3);
+            border-right: 1px solid rgba(139, 223, 242, 0.3);
+            border-bottom: 1px solid rgba(139, 223, 242, 0.3);
             font-weight: 800;
         }
         #navBtn:focus {
-            background: #11384a;
-            color: #bdeee5;
+            background: rgba(17, 56, 74, 0.9);
+            color: #dffef6;
         }
 
         /* ── Sidebar footer ──────────────────────────────────────────── */
         #footerDiv {
-            color: #8bdff2;
-            background: #8bdff2;
+            color: rgba(139, 223, 242, 0.42);
+            background: rgba(139, 223, 242, 0.42);
             max-height: 1px;
             border: none;
         }
@@ -220,8 +226,8 @@ void MainWindow::applyStyle() {
             color: #f1e8ad;
             letter-spacing: 0.3px;
         }
-        #verLabel { font-size: 10px; color: #bdeee5; letter-spacing: 0.2px; }
-        #footerNote { font-size: 10px; color: #c4f7ff; }
+        #verLabel { font-size: 10px; color: #bdeee5; letter-spacing: 0.25px; }
+        #footerNote { font-size: 10px; color: #d4fbff; }
 
         #screenStack {
             background: transparent;
@@ -234,47 +240,53 @@ void MainWindow::applyStyle() {
 
         /* ── Shared screen typography ────────────────────────────────── */
         QLabel#screenTitle {
-            font-size: 32px;
+            font-size: 34px;
             font-weight: 800;
-            color: #f1e8ad;
-            letter-spacing: -0.65px;
+            color: #fff1b3;
+            letter-spacing: -0.8px;
         }
         QLabel#sectionLabel {
             font-size: 10px;
             font-weight: 700;
             color: #9ee6f2;
-            letter-spacing: 1.4px;
+            letter-spacing: 1.7px;
         }
 
         /* ── Generic buttons ─────────────────────────────────────────── */
         QPushButton#primaryBtn {
             background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                        stop:0 #8ee2a8, stop:0.5 #8bdff2, stop:1 #f1e8ad);
+                                        stop:0 #86e0b4, stop:0.52 #78daf0, stop:1 #efe6a8);
             color: #06172a;
-            border: 1px solid #b8ffda;
-            border-radius: 14px;
-            padding: 12px 26px;
+            border: 1px solid rgba(184, 255, 218, 0.78);
+            border-radius: 16px;
+            padding: 13px 26px;
             font-size: 14px;
             font-weight: 800;
         }
-        QPushButton#primaryBtn:hover { background: #8bdff2; }
-        QPushButton#primaryBtn:pressed { background: #8ee2a8; }
+        QPushButton#primaryBtn:hover {
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                        stop:0 #94e8bf, stop:0.5 #8fe5fb, stop:1 #f4edb8);
+        }
+        QPushButton#primaryBtn:pressed {
+            background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
+                                        stop:0 #6ad4a4, stop:0.5 #6ccde4, stop:1 #ddd188);
+        }
         QPushButton#primaryBtn:disabled {
             background: #31535f;
             color: #9eb8b9;
         }
 
         QPushButton#outlineBtn {
-            background: #0b2a3c;
+            background: rgba(11, 42, 60, 0.88);
             color: #f1e8ad;
             border: 1px solid #8bdff2;
-            border-radius: 14px;
+            border-radius: 16px;
             padding: 11px 20px;
             font-size: 14px;
             font-weight: 600;
         }
         QPushButton#outlineBtn:hover {
-            background: #123f46;
+            background: rgba(18, 63, 70, 0.94);
             border-color: #8ee2a8;
             color: #bdeee5;
         }
@@ -290,11 +302,11 @@ void MainWindow::applyStyle() {
             margin: 6px 2px 6px 0;
         }
         QScrollBar::handle:vertical {
-            background: #8bdff2;
+            background: rgba(139, 223, 242, 0.78);
             border-radius: 5px;
             min-height: 30px;
         }
-        QScrollBar::handle:vertical:hover { background: #f1e8ad; }
+        QScrollBar::handle:vertical:hover { background: rgba(241, 232, 173, 0.95); }
         QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
             height: 0;
             background: transparent;

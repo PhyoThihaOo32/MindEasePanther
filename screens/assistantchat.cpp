@@ -35,23 +35,24 @@ AssistantChat::AssistantChat(QWidget *parent)
 
     setStyleSheet(R"(
         QLabel#assistantIntro {
-            color: #d7fff1;
-            font-size: 15px;
+            color: #dffcf5;
+            font-size: 16px;
+            font-weight: 500;
             line-height: 1.35;
         }
         QFrame#assistantPanel,
         QFrame#assistantSidePanel {
-            border: 1px solid #8bdff2;
-            border-radius: 28px;
+            border: 1px solid rgba(139, 223, 242, 0.72);
+            border-radius: 32px;
             background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
-                                        stop:0 rgba(231, 251, 255, 210),
-                                        stop:0.46 rgba(255, 255, 255, 224),
-                                        stop:1 rgba(233, 255, 243, 205));
+                                        stop:0 rgba(224, 247, 255, 170),
+                                        stop:0.44 rgba(245, 252, 255, 188),
+                                        stop:1 rgba(225, 248, 239, 160));
         }
         QLabel#assistantPanelTitle,
         QLabel#assistantSideTitle {
             color: #082f49;
-            font-size: 18px;
+            font-size: 22px;
             font-weight: 850;
         }
         QLabel#assistantSmallCopy {
@@ -64,6 +65,11 @@ AssistantChat::AssistantChat(QWidget *parent)
             font-size: 12px;
             border: none;
             background: transparent;
+        }
+        QFrame#assistantComposer {
+            background: rgba(255, 255, 255, 0.42);
+            border: 1px solid rgba(139, 223, 242, 0.36);
+            border-radius: 26px;
         }
         QPushButton#linkPillBtn {
             background: #eefdf4;
@@ -80,23 +86,23 @@ AssistantChat::AssistantChat(QWidget *parent)
             color: #064d5f;
         }
         QLineEdit#assistantInput {
-            background: #ffffff;
+            background: rgba(255, 255, 255, 0.82);
             color: #082f49;
-            border: 2px solid #8bdff2;
+            border: 1px solid rgba(139, 223, 242, 0.64);
             border-radius: 18px;
-            padding: 14px 16px;
+            padding: 15px 18px;
             font-size: 15px;
             selection-background-color: #8ee2a8;
         }
         QLineEdit#assistantInput:focus {
-            border-color: #8ee2a8;
-            background: #f8ffff;
+            border: 1px solid #8ee2a8;
+            background: rgba(248, 255, 255, 0.92);
         }
     )");
 
     QVBoxLayout *root = new QVBoxLayout(this);
-    root->setContentsMargins(56, 42, 56, 42);
-    root->setSpacing(22);
+    root->setContentsMargins(58, 44, 58, 44);
+    root->setSpacing(24);
 
     buildHeader(root);
 
@@ -108,10 +114,10 @@ AssistantChat::AssistantChat(QWidget *parent)
 
     QFrame *chatPanel = new QFrame();
     chatPanel->setObjectName("assistantPanel");
-    applyAssistantGlow(chatPanel, 34, 8, QColor(139, 223, 242, 42));
+    applyAssistantGlow(chatPanel, 42, 10, QColor(139, 223, 242, 48));
     QVBoxLayout *chatLay = new QVBoxLayout(chatPanel);
-    chatLay->setContentsMargins(32, 28, 32, 28);
-    chatLay->setSpacing(16);
+    chatLay->setContentsMargins(36, 32, 36, 30);
+    chatLay->setSpacing(18);
 
     QLabel *panelTitle = new QLabel("Talk through one next step");
     panelTitle->setObjectName("assistantPanelTitle");
@@ -131,12 +137,15 @@ AssistantChat::AssistantChat(QWidget *parent)
     m_messagesWidget->setStyleSheet("background: transparent; border: none;");
     m_messagesLayout = new QVBoxLayout(m_messagesWidget);
     m_messagesLayout->setContentsMargins(2, 2, 12, 2);
-    m_messagesLayout->setSpacing(12);
+    m_messagesLayout->setSpacing(16);
     m_messagesLayout->addStretch(1);
     m_scroll->setWidget(m_messagesWidget);
     chatLay->addWidget(m_scroll, 1);
 
-    QHBoxLayout *inputLay = new QHBoxLayout();
+    QFrame *composer = new QFrame();
+    composer->setObjectName("assistantComposer");
+    QHBoxLayout *inputLay = new QHBoxLayout(composer);
+    inputLay->setContentsMargins(14, 14, 14, 14);
     inputLay->setSpacing(12);
 
     m_input = new QLineEdit();
@@ -148,7 +157,7 @@ AssistantChat::AssistantChat(QWidget *parent)
     m_sendBtn->setObjectName("primaryBtn");
     m_sendBtn->setCursor(Qt::PointingHandCursor);
     inputLay->addWidget(m_sendBtn);
-    chatLay->addLayout(inputLay);
+    chatLay->addWidget(composer);
 
     connect(m_sendBtn, &QPushButton::clicked, this, &AssistantChat::sendMessage);
     connect(m_input, &QLineEdit::returnPressed, this, &AssistantChat::sendMessage);
